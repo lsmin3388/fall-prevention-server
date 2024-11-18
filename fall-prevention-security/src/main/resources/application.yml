@@ -1,0 +1,8 @@
+app:
+  jwt:
+    secret: secret
+    bearer-type: Bearer
+    auth-header: Authorization
+    expiration:
+      access: 60 # 60  (1 minute)
+      refresh: 300 # 60 * 5 (5 minute)

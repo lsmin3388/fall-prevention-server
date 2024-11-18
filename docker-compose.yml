@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  fall-prevention-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    container_name: fall-prevention-server
+    env_file:
+      - .env
+    ports:
+      - ${SPRING_PORT}:${SPRING_PORT}
+    depends_on:
+      - fall-prevention-database
+
+  fall-prevention-database:
+    image: postgres:14
+    restart: always
+    container_name: fall-prevention-database
+    environment:
+      TZ: Asia/Seoul
+      LANG: C.UTF-8
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    command:
+      - -p ${DB_PORT}
+    volumes:
+      - fall-prevention-database:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  fall-prevention-database:
