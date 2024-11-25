@@ -1,3 +1,7 @@
+spring:
+  config:
+    activate:
+      on-profile: security-local
 app:
   jwt:
     secret: secret
@@ -6,3 +10,7 @@ app:
     expiration:
       access: 60 # 60  (1 minute)
       refresh: 300 # 60 * 5 (5 minute)
+
+logging:
+  level:
+    org.springframework.security: DEBUG

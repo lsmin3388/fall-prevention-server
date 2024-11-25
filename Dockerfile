@@ -43,4 +43,4 @@ WORKDIR /app
 COPY --from=build /gradle/project/${MAIN_BOOTSTRAP_MODULE}/build/libs/*.jar ./app.jar
 
 # Run the application
-ENTRYPOINT ["java", "-Duser.timezone=GMT+9", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=GMT+9", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=prod-profile", "-jar", "app.jar"]
