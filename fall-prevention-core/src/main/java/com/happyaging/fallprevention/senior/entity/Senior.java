@@ -52,7 +52,7 @@ public class Senior extends BaseAuditEntity {
     private String memo;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "account_id")
     private Account account;
 
     @Builder

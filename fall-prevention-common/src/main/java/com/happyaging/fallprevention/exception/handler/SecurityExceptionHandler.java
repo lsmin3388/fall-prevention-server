@@ -7,10 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.happyaging.fallprevention.exception.BaseExceptionHandler;
 import com.happyaging.fallprevention.exception.ExceptionHandlerOrder;
-import com.happyaging.fallprevention.exception.support.business.ApplicationLogicException;
-import com.happyaging.fallprevention.exception.support.business.BadRequestException;
-import com.happyaging.fallprevention.exception.support.business.DuplicatedException;
-import com.happyaging.fallprevention.exception.support.business.NotFoundException;
+import com.happyaging.fallprevention.exception.support.security.ForbiddenException;
+import com.happyaging.fallprevention.exception.support.security.SecurityException;
+import com.happyaging.fallprevention.exception.support.security.UnauthorizedException;
 import com.happyaging.fallprevention.util.api.ApiErrorResult;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,25 +17,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 @Order(ExceptionHandlerOrder.SECURITY_EXCEPTION_HANDLER)
-public class SecurityExceptionHandler extends BaseExceptionHandler<Exception> {
+public class SecurityExceptionHandler extends BaseExceptionHandler<SecurityException> {
 
-	@ExceptionHandler(BadRequestException.class)
-	public ResponseEntity<ApiErrorResult> handleBadRequestException(BadRequestException exception) {
+	@ExceptionHandler(SecurityException.class)
+	public ResponseEntity<ApiErrorResult> handleSecurityException(SecurityException exception) {
 		return handleException(exception, exception.getHttpStatus(), exception.getErrorMsg());
 	}
 
-	@ExceptionHandler(DuplicatedException.class)
-	public ResponseEntity<ApiErrorResult> handleDuplicatedException(DuplicatedException exception) {
+	@ExceptionHandler(UnauthorizedException.class)
+	public ResponseEntity<ApiErrorResult> handleAuthenticationFailedException(UnauthorizedException exception) {
 		return handleException(exception, exception.getHttpStatus(), exception.getErrorMsg());
 	}
 
-	@ExceptionHandler(NotFoundException.class)
-	public ResponseEntity<ApiErrorResult> handleNotFoundException(NotFoundException exception) {
-		return handleException(exception, exception.getHttpStatus(), exception.getErrorMsg());
-	}
-
-	@ExceptionHandler(ApplicationLogicException.class)
-	public ResponseEntity<ApiErrorResult> handleApplicationLogicException(ApplicationLogicException exception) {
+	@ExceptionHandler(ForbiddenException.class)
+	public ResponseEntity<ApiErrorResult> handleForbiddenException(ForbiddenException exception) {
 		return handleException(exception, exception.getHttpStatus(), exception.getErrorMsg());
 	}
 }

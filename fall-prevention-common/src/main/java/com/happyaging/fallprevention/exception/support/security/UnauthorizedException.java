@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import lombok.Getter;
 
 @Getter
-public abstract class AuthenticationFailedException extends SecurityException {
+public abstract class UnauthorizedException extends SecurityException {
 	private final HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
-	public AuthenticationFailedException(final String errorMsg) {
+	public UnauthorizedException(final String errorMsg) {
 		super(errorMsg);
 	}
 }

@@ -8,7 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,11 +21,11 @@ public class Region extends BaseAuditEntity {
     @Column(name = "region_id")
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "region_name", nullable = false)
+    private String regionName;
 
     @Builder
-    public Region(String name) {
-        this.name = name;
+    public Region(String regionName) {
+        this.regionName = regionName;
     }
 }

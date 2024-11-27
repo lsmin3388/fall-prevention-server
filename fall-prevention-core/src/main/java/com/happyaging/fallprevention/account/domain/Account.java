@@ -18,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,20 +31,27 @@ import lombok.NoArgsConstructor;
 public class Account extends BaseAuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "account_id")
     private Long id;
 
+    @NotBlank
     @Column(name = "username", nullable = false)
     private String username;
 
-    @Email
-    @Column(name = "email", nullable = false)
+    @Email(message = "이메일 형식이 아닙니다.")
+    @NotBlank
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @NotBlank
+    @Pattern(
+        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+        message = "비밀번호는 최소 8자리이며, 대소문자, 숫자, 특수문자를 포함해야 합니다."
+    )
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Pattern(regexp = "^\\+?[0-9]{1,3}-?[0-9]{3,4}-?[0-9]{4}$")
+    @NotBlank
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
@@ -55,7 +63,7 @@ public class Account extends BaseAuditEntity {
     @JoinColumn(name = "region_id")
     private Region region;
 
-    @OneToMany(mappedBy = "user_id")
+    @OneToMany(mappedBy = "account")
     private List<Senior> senior = new ArrayList<>();
 
     @Builder

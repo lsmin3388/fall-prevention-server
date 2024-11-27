@@ -10,6 +10,7 @@ import com.happyaging.fallprevention.exception.BaseExceptionHandler;
 import com.happyaging.fallprevention.exception.ExceptionHandlerOrder;
 import com.happyaging.fallprevention.util.api.ApiErrorResult;
 
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,5 +22,10 @@ public class ExternalExceptionHandler extends BaseExceptionHandler<Exception> {
 	public ResponseEntity<ApiErrorResult> handleException(Exception exception) {
 		log.error("Unhandled exception occurred", exception);
 		return handleException(exception, HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
+	}
+
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<ApiErrorResult> handleValidationException(ValidationException exception) {
+		return handleException(exception, HttpStatus.BAD_REQUEST, exception.getMessage());
 	}
 }
