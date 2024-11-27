@@ -1,4 +1,4 @@
-package com.happyaging.fallprevention.region.domain;
+package com.happyaging.fallprevention.region.entity;
 
 import com.happyaging.fallprevention.base.BaseAuditEntity;
 

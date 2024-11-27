@@ -4,7 +4,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.happyaging.fallprevention.account.domain.Account;
+import com.happyaging.fallprevention.account.entity.Account;
 import com.happyaging.fallprevention.account.persistence.AccountRepository;
 
 import lombok.RequiredArgsConstructor;

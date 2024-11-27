@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.happyaging.fallprevention.account.domain.Account;
+import com.happyaging.fallprevention.account.entity.Account;
 
 public record PrincipalDetails(Account account) implements UserDetails {
 

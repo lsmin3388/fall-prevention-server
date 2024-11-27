@@ -2,7 +2,7 @@ package com.happyaging.fallprevention.region.service;
 
 import org.springframework.stereotype.Service;
 
-import com.happyaging.fallprevention.region.domain.Region;
+import com.happyaging.fallprevention.region.entity.Region;
 import com.happyaging.fallprevention.region.exception.RegionNotFoundException;
 import com.happyaging.fallprevention.region.persistence.RegionRepository;
 

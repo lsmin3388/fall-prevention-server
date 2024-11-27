@@ -1,4 +1,4 @@
-package com.happyaging.fallprevention.account.domain;
+package com.happyaging.fallprevention.account.entity;
 
 /**
  * 역할
@@ -7,7 +7,6 @@ package com.happyaging.fallprevention.account.domain;
  * ADMIN: 관리자 (시스템 관리자)
  */
 public enum AccountRole {
-    MANAGER_PENDING,
-    MANAGER,
+    USER,
     ADMIN
 }

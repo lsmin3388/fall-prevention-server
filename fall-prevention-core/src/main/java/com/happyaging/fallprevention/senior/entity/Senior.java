@@ -1,6 +1,6 @@
 package com.happyaging.fallprevention.senior.entity;
 
-import com.happyaging.fallprevention.account.domain.Account;
+import com.happyaging.fallprevention.account.entity.Account;
 import com.happyaging.fallprevention.base.BaseAuditEntity;
 
 import jakarta.persistence.Column;

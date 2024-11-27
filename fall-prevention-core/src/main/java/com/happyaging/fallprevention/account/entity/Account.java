@@ -1,10 +1,10 @@
-package com.happyaging.fallprevention.account.domain;
+package com.happyaging.fallprevention.account.entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.happyaging.fallprevention.base.BaseAuditEntity;
-import com.happyaging.fallprevention.region.domain.Region;
+import com.happyaging.fallprevention.region.entity.Region;
 import com.happyaging.fallprevention.senior.entity.Senior;
 
 import jakarta.persistence.Column;

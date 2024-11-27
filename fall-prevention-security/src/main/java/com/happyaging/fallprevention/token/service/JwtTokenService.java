@@ -11,7 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.happyaging.fallprevention.account.domain.Account;
+import com.happyaging.fallprevention.account.entity.Account;
 import com.happyaging.fallprevention.account.persistence.AccountRepository;
 import com.happyaging.fallprevention.exception.UserNotFoundException;
 import com.happyaging.fallprevention.properties.JwtProperties;
