@@ -7,6 +7,7 @@ import com.happyaging.fallprevention.base.BaseAuditEntity;
 import com.happyaging.fallprevention.region.domain.Region;
 import com.happyaging.fallprevention.senior.entity.Senior;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -55,7 +56,7 @@ public class Account extends BaseAuditEntity {
     @JoinColumn(name = "region_id")
     private Region region;
 
-    @OneToMany(mappedBy = "user_id")
+    @OneToMany(mappedBy = "account")
     private List<Senior> senior = new ArrayList<>();
 
     @Builder
