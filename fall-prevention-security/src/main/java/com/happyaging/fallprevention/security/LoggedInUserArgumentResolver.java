@@ -1,7 +1,5 @@
 package com.happyaging.fallprevention.security;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +9,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import com.happyaging.fallprevention.annotation.LoggedInUser;
 import com.happyaging.fallprevention.security.details.PrincipalDetails;
 
 import jakarta.annotation.Nonnull;

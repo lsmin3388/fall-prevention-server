@@ -17,12 +17,6 @@ public class RefreshTokenService {
 
 	private final RefreshTokenRepository refreshTokenRepository;
 
-	/**
-	 * Refresh Token 을 Spring Cache 에서 조회한다.
-	 * 만약 없다면 DB 에서 조회한 후 Spring Cache 에 저장한다.
-	 * @param email 사용자 이메일
-	 * @return Refresh Token
-	 */
 	@Transactional(readOnly = true)
 	@Cacheable(value = "refreshTokens", key = "#email", unless = "#result == null")
 	public String getRefreshToken(String email) {
@@ -31,11 +25,6 @@ public class RefreshTokenService {
 			.orElse(null);
 	}
 
-	/**
-	 * Refresh Token 을 Spring Cache 에 저장한다.
-	 * @param refreshToken Refresh Token
-	 * @return Refresh Token
-	 */
 	@Transactional
 	@CachePut(value = "refreshTokens", key = "#refreshToken.email")
 	public String updateRefreshToken(RefreshToken refreshToken) {
@@ -43,10 +32,6 @@ public class RefreshTokenService {
 		return refreshToken.getRefreshToken();
 	}
 
-	/**
-	 * Refresh Token 을 Spring Cache 에서 삭제한다.
-	 * @param email 사용자 이메일
-	 */
 	@Transactional
 	@CacheEvict(value = "refreshTokens", key = "#email")
 	public void deleteRefreshToken(String email) {

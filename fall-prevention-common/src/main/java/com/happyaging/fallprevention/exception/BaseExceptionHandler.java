@@ -19,7 +19,8 @@ public abstract class BaseExceptionHandler<T extends Throwable> {
 		} else {
 			log.warn("Unexpected status {}: {}", status, exception.getMessage(), exception);
 		}
-		return ResponseEntity.status(status)
+		return ResponseEntity
+			.status(status)
 			.body(ApiResponse.error(status, errorMsg));
 	}
 }

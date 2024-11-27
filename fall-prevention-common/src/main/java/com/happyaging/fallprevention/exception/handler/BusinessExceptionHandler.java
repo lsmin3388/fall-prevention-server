@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 @Order(ExceptionHandlerOrder.BUSINESS_EXCEPTION_HANDLER)
-public class BusinessExceptionHandler extends BaseExceptionHandler<Exception> {
+public class BusinessExceptionHandler extends BaseExceptionHandler<ApplicationLogicException> {
 
 	@ExceptionHandler(BadRequestException.class)
 	public ResponseEntity<ApiErrorResult> handleBadRequestException(BadRequestException exception) {

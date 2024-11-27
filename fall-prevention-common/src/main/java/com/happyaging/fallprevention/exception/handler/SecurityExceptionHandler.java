@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 @Order(ExceptionHandlerOrder.SECURITY_EXCEPTION_HANDLER)
-public class SecurityExceptionHandler extends BaseExceptionHandler<Exception> {
+public class SecurityExceptionHandler extends BaseExceptionHandler<SecurityException> {
 
 	@ExceptionHandler(SecurityException.class)
 	public ResponseEntity<ApiErrorResult> handleSecurityException(SecurityException exception) {
