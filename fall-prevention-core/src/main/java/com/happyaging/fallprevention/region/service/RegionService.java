@@ -14,6 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RegionService {
 	private final RegionRepository regionRepository;
 
@@ -23,15 +24,15 @@ public class RegionService {
 	}
 
 	@Transactional
-	public void createRegion(@Valid Region region) {
-		regionRepository.save(region);
+	public Region createRegion(@Valid Region region) {
+		return regionRepository.save(region);
 	}
 
 	@Transactional
-	public void updateRegion(String currentRegionName, String newRegionName) {
+	public Region updateRegion(String currentRegionName, String newRegionName) {
 		Region region = regionRepository.findByRegionName(currentRegionName)
 			.orElseThrow(RegionNotFoundException::new);
-		region.updateRegionName(newRegionName);
+		return region.updateRegionName(newRegionName);
 	}
 
 
