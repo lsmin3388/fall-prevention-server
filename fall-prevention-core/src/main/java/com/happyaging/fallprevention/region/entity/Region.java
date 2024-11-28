@@ -28,4 +28,8 @@ public class Region extends BaseAuditEntity {
     public Region(String regionName) {
         this.regionName = regionName;
     }
+
+    public void updateRegionName(String regionName) {
+        this.regionName = regionName;
+    }
 }
