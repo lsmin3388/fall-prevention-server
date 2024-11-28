@@ -1,6 +1,7 @@
 package com.happyaging.fallprevention.region.api;
 
 import com.happyaging.fallprevention.region.dto.RegionRequestDto;
+import com.happyaging.fallprevention.region.dto.RegionUpdateRequestDto;
 import com.happyaging.fallprevention.region.entity.Region;
 import com.happyaging.fallprevention.region.service.RegionService;
 import com.happyaging.fallprevention.util.api.ApiResponse;
@@ -26,12 +27,11 @@ public class RegionController {
                 .body(ApiResponse.success(HttpStatus.CREATED));
     }
 
-    @PutMapping("/update/{regionId}")
+    @PutMapping("/update")
     public ResponseEntity<ApiSuccessResult<Object>> updateRegion(
-            @PathVariable Long regionId,
-            @Valid @RequestBody RegionRequestDto requestDto
-    ) {
-        regionService.updateRegion(regionId, requestDto.regionName());
+            @Valid @RequestBody RegionUpdateRequestDto requestDto
+            ) {
+        regionService.updateRegion(requestDto.currentRegionName(), requestDto.newRegionName());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(HttpStatus.OK));
     }

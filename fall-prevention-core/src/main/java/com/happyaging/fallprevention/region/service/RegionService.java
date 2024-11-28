@@ -28,10 +28,10 @@ public class RegionService {
 	}
 
 	@Transactional
-	public void updateRegion(Long regionId, String regionName) {
-		Region region = regionRepository.findById(regionId)
-				.orElseThrow(RegionNotFoundException::new);
-		region.updateRegionName(regionName);
+	public void updateRegion(String currentRegionName, String newRegionName) {
+		Region region = regionRepository.findByRegionName(currentRegionName)
+			.orElseThrow(RegionNotFoundException::new);
+		region.updateRegionName(newRegionName);
 	}
 
 
