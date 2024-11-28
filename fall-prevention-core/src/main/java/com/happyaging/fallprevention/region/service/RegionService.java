@@ -36,7 +36,9 @@ public class RegionService {
 
 
 	@Transactional
-	public void deleteRegion(@Valid Region region) {
+	public void deleteRegion(String regionName) {
+		Region region = regionRepository.findByRegionName(regionName)
+			.orElseThrow(RegionNotFoundException::new);
 		regionRepository.delete(region);
 	}
 

@@ -35,4 +35,13 @@ public class RegionController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(HttpStatus.OK));
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiSuccessResult<Object>> deleteRegion(
+            @RequestParam String regionName
+            ) {
+        regionService.deleteRegion(regionName);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(HttpStatus.OK));
+    }
 }
