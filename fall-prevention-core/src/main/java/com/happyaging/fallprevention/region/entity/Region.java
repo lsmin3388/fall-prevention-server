@@ -21,11 +21,16 @@ public class Region extends BaseAuditEntity {
     @Column(name = "region_id")
     private Long id;
 
-    @Column(name = "region_name", nullable = false)
+    @Column(unique = true ,name = "region_name", nullable = false)
     private String regionName;
 
     @Builder
     public Region(String regionName) {
         this.regionName = regionName;
+    }
+
+    public Region updateRegionName(String regionName) {
+        this.regionName = regionName;
+        return this;
     }
 }
