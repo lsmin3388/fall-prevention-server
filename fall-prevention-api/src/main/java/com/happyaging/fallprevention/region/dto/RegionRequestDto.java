@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 public record RegionRequestDto(
         @NotBlank(message = "Region name must not be blank")
         String regionName) {
+
     public  Region toEntity() {
         return Region.builder()
                 .regionName(regionName)

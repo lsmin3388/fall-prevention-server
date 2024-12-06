@@ -35,7 +35,6 @@ public class RegionService {
 		return region.updateRegionName(newRegionName);
 	}
 
-
 	@Transactional
 	public void deleteRegion(String regionName) {
 		Region region = regionRepository.findByRegionName(regionName)
