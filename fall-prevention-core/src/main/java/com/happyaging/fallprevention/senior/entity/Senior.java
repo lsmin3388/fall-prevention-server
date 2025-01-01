@@ -2,6 +2,7 @@ package com.happyaging.fallprevention.senior.entity;
 
 import com.happyaging.fallprevention.account.entity.Account;
 import com.happyaging.fallprevention.base.BaseAuditEntity;
+import com.happyaging.fallprevention.senior.usecase.dto.SeniorUpdateDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,5 +68,15 @@ public class Senior extends BaseAuditEntity {
         this.relation = relation;
         this.memo = memo;
         this.account = account;
+    }
+
+    public void update(SeniorUpdateDto updateDto) {
+        if (updateDto.name() != null) this.name = updateDto.name();
+        if (updateDto.address() != null) this.address = updateDto.address();
+        if (updateDto.birthYear() != null) this.birthYear = updateDto.birthYear();
+        if (updateDto.sex() != null) this.sex = updateDto.sex();
+        if (updateDto.phoneNumber() != null) this.phoneNumber = updateDto.phoneNumber();
+        if (updateDto.relationship() != null) this.relation = updateDto.relationship();
+        if (updateDto.memo() != null) this.memo = updateDto.memo();
     }
 }
