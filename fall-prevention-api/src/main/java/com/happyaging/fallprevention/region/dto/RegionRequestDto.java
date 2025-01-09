@@ -1,6 +1,7 @@
 package com.happyaging.fallprevention.region.dto;
 
 import com.happyaging.fallprevention.region.entity.Region;
+
 import jakarta.validation.constraints.NotBlank;
 
 public record RegionRequestDto(

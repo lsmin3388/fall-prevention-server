@@ -1,16 +1,16 @@
 package com.happyaging.fallprevention.region.service;
 
-import jakarta.validation.Valid;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.happyaging.fallprevention.region.entity.Region;
 import com.happyaging.fallprevention.region.exception.RegionNotFoundException;
 import com.happyaging.fallprevention.region.persistence.RegionRepository;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

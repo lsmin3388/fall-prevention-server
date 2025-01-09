@@ -1,6 +1,7 @@
 package com.happyaging.fallprevention.product.dto;
 
 import com.happyaging.fallprevention.product.entity.Product;
+
 import lombok.Builder;
 
 @Builder
