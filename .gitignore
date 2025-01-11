@@ -20,10 +20,11 @@ derby.log
 .gradletasknamecache
 /build
 buildSrc/build
-/spring-*/build
+fall-prevention-*/build
 /framework-*/build
 /integration-tests/build
 /src/asciidoc/build
+fall-prevention-*/src/asciidoc/build
 spring-test/test-output/
 
 # Maven artifacts
@@ -93,3 +94,8 @@ Temporary Items
 
 # Environment Variables
 .env
+
+
+### for dev
+test.sh
+output.txt

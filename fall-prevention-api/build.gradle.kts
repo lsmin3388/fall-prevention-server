@@ -3,7 +3,6 @@ dependencies {
     implementation(project(":fall-prevention-common"))
     implementation(project(":fall-prevention-security"))
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    // API 문서화
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 }

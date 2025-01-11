@@ -1,9 +1,7 @@
 dependencies {
     implementation(project(":fall-prevention-common"))
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
+    // 데이터베이스 의존성
     implementation("com.h2database:h2")
     implementation("org.postgresql:postgresql")
 }

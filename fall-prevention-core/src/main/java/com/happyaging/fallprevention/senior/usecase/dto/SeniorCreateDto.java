@@ -5,6 +5,9 @@ import com.happyaging.fallprevention.senior.entity.Relationship;
 import com.happyaging.fallprevention.senior.entity.Senior;
 import com.happyaging.fallprevention.senior.entity.SeniorSex;
 
+import lombok.Builder;
+
+@Builder
 public record SeniorCreateDto(
 	String name,
 	String address,
