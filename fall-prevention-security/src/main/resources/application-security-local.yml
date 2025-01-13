@@ -4,7 +4,7 @@ spring:
       on-profile: security-local
 app:
   jwt:
-    secret: secret
+    secret: iy9mezMgQvVfRMPACkVtsnftFnrUK8pn
     bearer-type: Bearer
     auth-header: Authorization
     expiration:

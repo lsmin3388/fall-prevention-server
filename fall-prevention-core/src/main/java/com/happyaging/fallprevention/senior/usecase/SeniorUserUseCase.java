@@ -9,7 +9,7 @@ import com.happyaging.fallprevention.senior.usecase.dto.SeniorUpdateDto;
 
 public interface SeniorUserUseCase {
 	Long createSenior(Account account, SeniorCreateDto seniorCreateDto);
-	Long updateSenior(Long seniorId, SeniorUpdateDto seniorUpdateDto);
-	void deleteSenior(Long seniorId);
+	Long updateSenior(Account account, Long seniorId, SeniorUpdateDto seniorUpdateDto);
+	void deleteSenior(Account account, Long seniorId);
 	List<SeniorReadDto> getMySeniors(Account account);
 }

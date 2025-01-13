@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 public class SeniorUserService implements SeniorUserUseCase {
 	private final SeniorRepository seniorRepository;
 
-
 	@Override
 	@Transactional
 	public Long createSenior(Account account, SeniorCreateDto seniorCreateDto) {
@@ -31,8 +30,8 @@ public class SeniorUserService implements SeniorUserUseCase {
 
 	@Override
 	@Transactional
-	public Long updateSenior(Long seniorId, SeniorUpdateDto seniorUpdateDto) {
-		Senior targetSenior = seniorRepository.findById(seniorId)
+	public Long updateSenior(Account account, Long seniorId, SeniorUpdateDto seniorUpdateDto) {
+		Senior targetSenior = seniorRepository.findByAccountAndId(account, seniorId)
 			.orElseThrow(SeniorNotFoundException::new);
 
 		targetSenior.update(seniorUpdateDto);
@@ -41,8 +40,8 @@ public class SeniorUserService implements SeniorUserUseCase {
 	}
 
 	@Override
-	public void deleteSenior(Long seniorId) {
-		Senior targetSenior = seniorRepository.findById(seniorId)
+	public void deleteSenior(Account account, Long seniorId) {
+		Senior targetSenior = seniorRepository.findByAccountAndId(account, seniorId)
 			.orElseThrow(SeniorNotFoundException::new);
 
 		seniorRepository.delete(targetSenior);

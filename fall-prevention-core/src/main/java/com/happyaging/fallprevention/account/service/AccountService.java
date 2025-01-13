@@ -1,21 +1,18 @@
 package com.happyaging.fallprevention.account.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.happyaging.fallprevention.account.entity.Account;
-import com.happyaging.fallprevention.account.persistence.AccountRepository;
+import com.happyaging.fallprevention.account.usecase.AccountUseCase;
+import com.happyaging.fallprevention.account.usecase.dto.AccountReadDto;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AccountService {
-	private final AccountRepository accountRepository;
-
-	@Transactional
-	public void register(@Valid Account account) {
-		accountRepository.save(account);
+public class AccountService implements AccountUseCase {
+	@Override
+	public AccountReadDto getMyAccount(Account account) {
+		return AccountReadDto.fromEntity(account);
 	}
 }
