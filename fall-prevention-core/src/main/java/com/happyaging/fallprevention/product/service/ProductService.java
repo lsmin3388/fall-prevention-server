@@ -2,6 +2,10 @@ package com.happyaging.fallprevention.product.service;
 
 import java.util.List;
 
+import com.happyaging.fallprevention.product.entity.ProductQuestion;
+import com.happyaging.fallprevention.product.persistence.ProductQuestionRepository;
+import com.happyaging.fallprevention.survey.entity.question.Question;
+import com.happyaging.fallprevention.survey.persistence.QuestionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final QuestionRepository questionRepository;
+    private final ProductQuestionRepository productQuestionRepository;
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -49,4 +55,23 @@ public class ProductService {
         return productRepository.findById(id)
                 .orElseThrow(ProductNotFoundException::new);
     }
+
+    public ProductQuestion connectQuestion(Long productId, Long questionId, int priority) {
+        Product product = getProduct(productId);
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(ProductNotFoundException::new);
+
+        ProductQuestion productQuestion = ProductQuestion.builder()
+                .product(product)
+                .question(question)
+                .priority(priority)
+                .build();
+
+        return productQuestionRepository.save(productQuestion);
+    }
+
+    public List<ProductQuestion> getAllByQuestionId(Long questionId) {
+        return productQuestionRepository.findAllByQuestionId(questionId);
+    }
+
 }
