@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Base64;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -24,7 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class StorageService {
-    private static final Path storageLocation = Paths.get("/storage/images");
+    // private static final Path storageLocation = Paths.get("storage/images");
+    private static final Path storageLocation = Paths.get(System.getProperty("user.dir"), "storage", "images");
 
     public String storeImage(MultipartFile image) {
         try {
@@ -71,6 +73,17 @@ public class StorageService {
             }
         } catch (MalformedURLException e) {
             throw new FilePathInvalidException();
+        }
+    }
+
+    public String loadAsBase64(String fileName) {
+        try {
+            Path path = load(fileName);
+            byte[] fileBytes = Files.readAllBytes(path);
+
+            return Base64.getEncoder().encodeToString(fileBytes);
+        } catch (IOException e) {
+            throw new FileNotFoundException();
         }
     }
 }

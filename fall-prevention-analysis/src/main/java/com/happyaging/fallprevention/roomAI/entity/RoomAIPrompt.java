@@ -1,0 +1,72 @@
+package com.happyaging.fallprevention.roomAI.entity;
+
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "room_ai_prompt")
+public class RoomAIPrompt {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "room_ai_prompt_id")
+	private Long id;
+
+	@Column(nullable = false)
+	private String roomName;
+
+	@Column(nullable = false)
+	private RoomCategory roomCategory;
+
+	@Lob
+	@Column(name = "response")
+	private String response;
+
+	@OneToMany(
+		mappedBy = "roomAIPrompt",
+		cascade = CascadeType.ALL,
+		orphanRemoval = true
+	)
+	private List<RoomAIImage> roomAIImages;
+
+	@ManyToOne
+	@JoinColumn(name = "room_ai_id")
+	private RoomAI roomAI;
+
+	@Builder
+	public RoomAIPrompt(Long id, String roomName, RoomCategory roomCategory, String response,
+		List<RoomAIImage> roomAIImages, RoomAI roomAI) {
+		this.id = id;
+		this.roomName = roomName;
+		this.roomCategory = roomCategory;
+		this.response = response;
+		this.roomAIImages = roomAIImages;
+		this.roomAI = roomAI;
+	}
+
+	public void updateResponse(String response) {
+		this.response = response;
+	}
+
+	public List<String> getImagesFilename() {
+		return roomAIImages.stream()
+			.map(RoomAIImage::getFilename)
+			.toList();
+	}
+}

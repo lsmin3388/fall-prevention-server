@@ -1,0 +1,3 @@
+openai:
+  api-url: ${OPENAI_API_URL}
+  api-key: ${OPENAI_API_KEY}
