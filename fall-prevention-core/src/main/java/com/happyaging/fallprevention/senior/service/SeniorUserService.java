@@ -30,20 +30,16 @@ public class SeniorUserService implements SeniorUserUseCase {
 
 	@Override
 	@Transactional
-	public Long updateSenior(Account account, Long seniorId, SeniorUpdateDto seniorUpdateDto) {
-		Senior targetSenior = seniorRepository.findByAccountAndId(account, seniorId)
-			.orElseThrow(SeniorNotFoundException::new);
-
+	public Long updateSenior(Long seniorId, SeniorUpdateDto seniorUpdateDto) {
+		Senior targetSenior = getSenior(seniorId);
 		targetSenior.update(seniorUpdateDto);
 
 		return targetSenior.getId();
 	}
 
 	@Override
-	public void deleteSenior(Account account, Long seniorId) {
-		Senior targetSenior = seniorRepository.findByAccountAndId(account, seniorId)
-			.orElseThrow(SeniorNotFoundException::new);
-
+	public void deleteSenior(Long seniorId) {
+		Senior targetSenior = getSenior(seniorId);
 		seniorRepository.delete(targetSenior);
 	}
 
@@ -51,5 +47,16 @@ public class SeniorUserService implements SeniorUserUseCase {
 	public List<SeniorReadDto> getMySeniors(Account account) {
 		List<Senior> seniors = seniorRepository.findAllByAccount(account);
 		return SeniorReadDto.fromEntities(seniors);
+	}
+
+	@Override
+	public SeniorReadDto getMySenior(Long seniorId) {
+		Senior senior = getSenior(seniorId);
+		return SeniorReadDto.fromEntity(senior);
+	}
+
+	public Senior getSenior(Long seniorId) {
+		return seniorRepository.findById(seniorId)
+			.orElseThrow(SeniorNotFoundException::new);
 	}
 }

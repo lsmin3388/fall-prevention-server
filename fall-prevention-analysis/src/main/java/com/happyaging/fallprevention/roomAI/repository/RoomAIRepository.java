@@ -12,9 +12,9 @@ import org.springframework.data.repository.query.Param;
 import com.happyaging.fallprevention.roomAI.entity.RoomAI;
 
 public interface RoomAIRepository extends JpaRepository<RoomAI, Long> {
-	@Query("SELECT r.createdAt FROM RoomAI r WHERE r.account.id = :accountId")
-	List<LocalDateTime> findCreatedAtByAccountId(@Param("accountId") Long accountId);
+	@Query("SELECT DISTINCT r.createdAt FROM RoomAI r WHERE r.senior.id = :seniorId ORDER BY r.createdAt DESC")
+	List<LocalDateTime> findCreatedAtBySeniorId(@Param("seniorId") Long seniorId);
 
 	@EntityGraph(attributePaths = {"roomAIPrompt", "roomAIPrompt.roomAIImages"})
-	Optional<RoomAI> findByAccount_IdAndCreatedAt(Long accountId, LocalDateTime createdAt);
+	Optional<RoomAI> findBySenior_IdAndCreatedAt(Long seniorId, LocalDateTime createdAt);
 }

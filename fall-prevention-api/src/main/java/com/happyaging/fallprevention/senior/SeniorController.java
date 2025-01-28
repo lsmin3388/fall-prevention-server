@@ -52,16 +52,11 @@ public class SeniorController {
 
 	@PutMapping("/{seniorId}")
 	@PreAuthorize("hasRole('USER') and isAuthenticated()")
-	public ResponseEntity<ApiSuccessResult<Long>> createSenior(
+	public ResponseEntity<ApiSuccessResult<Long>> updateSenior(
 		@RequestBody SeniorUpdateDto updateDto,
-		@PathVariable Long seniorId,
-		@LoggedInUser PrincipalDetails principalDetails
+		@PathVariable @MySenior Long seniorId
 	) {
-		Long responseBody = seniorUserUseCase.updateSenior(
-			principalDetails.account(),
-			seniorId,
-			updateDto
-		);
+		Long responseBody = seniorUserUseCase.updateSenior(seniorId, updateDto);
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
@@ -74,10 +69,7 @@ public class SeniorController {
 		@PathVariable Long seniorId,
 		@LoggedInUser PrincipalDetails principalDetails
 	) {
-		seniorUserUseCase.deleteSenior(
-			principalDetails.account(),
-			seniorId
-		);
+		seniorUserUseCase.deleteSenior(seniorId);
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
@@ -89,9 +81,19 @@ public class SeniorController {
 	public ResponseEntity<ApiSuccessResult<List<SeniorReadDto>>> getMySeniors(
 		@LoggedInUser PrincipalDetails principalDetails
 	) {
-		List<SeniorReadDto> responseBody = seniorUserUseCase.getMySeniors(
-			principalDetails.account()
-		);
+		List<SeniorReadDto> responseBody = seniorUserUseCase.getMySeniors(principalDetails.account());
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiResponse.success(HttpStatus.OK, responseBody));
+	}
+
+	@GetMapping("/me/{seniorId}")
+	@PreAuthorize("hasRole('USER') and isAuthenticated()")
+	public ResponseEntity<ApiSuccessResult<SeniorReadDto>> getMySenior(
+		@PathVariable @MySenior Long seniorId
+	) {
+		SeniorReadDto responseBody = seniorUserUseCase.getMySenior(seniorId);
 
 		return ResponseEntity
 			.status(HttpStatus.OK)

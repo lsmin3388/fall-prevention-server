@@ -3,8 +3,8 @@ package com.happyaging.fallprevention.roomAI.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.happyaging.fallprevention.account.entity.Account;
 import com.happyaging.fallprevention.base.BaseAuditEntity;
+import com.happyaging.fallprevention.senior.entity.Senior;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,8 +33,8 @@ public class RoomAI extends BaseAuditEntity {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "account_id")
-	private Account account;
+	@JoinColumn(name = "senior_id")
+	private Senior senior;
 
 	/**
 	 * 기존: private List<RoomAIPrompt> roomAIPrompt;
@@ -48,8 +48,8 @@ public class RoomAI extends BaseAuditEntity {
 	private Set<RoomAIPrompt> roomAIPrompt = new HashSet<>();
 
 	@Builder
-	public RoomAI(Long id, Account account) {
+	public RoomAI(Long id, Senior senior) {
 		this.id = id;
-		this.account = account;
+		this.senior = senior;
 	}
 }

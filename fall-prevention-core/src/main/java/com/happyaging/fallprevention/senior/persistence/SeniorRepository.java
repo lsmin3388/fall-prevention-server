@@ -11,4 +11,5 @@ import com.happyaging.fallprevention.senior.entity.Senior;
 public interface SeniorRepository extends JpaRepository<Senior, Long> {
 	List<Senior> findAllByAccount(Account account);
 	Optional<Senior> findByAccountAndId(Account account, Long id);
+	boolean existsByIdAndAccountId(Long seniorId, Long accountId);
 }

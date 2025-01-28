@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.happyaging.fallprevention.account.entity.Account;
 import com.happyaging.fallprevention.gpt.service.GPTService;
 import com.happyaging.fallprevention.roomAI.entity.RoomAI;
 import com.happyaging.fallprevention.roomAI.entity.RoomAIPrompt;
@@ -23,6 +22,8 @@ import com.happyaging.fallprevention.roomAI.repository.RoomAIRepository;
 import com.happyaging.fallprevention.roomAI.usecase.RoomAIUseCase;
 import com.happyaging.fallprevention.roomAI.usecase.dto.request.RoomAIRequest;
 import com.happyaging.fallprevention.roomAI.usecase.dto.response.RoomAIResponse;
+import com.happyaging.fallprevention.senior.entity.Senior;
+import com.happyaging.fallprevention.senior.persistence.SeniorRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,17 +31,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class RoomAIService implements RoomAIUseCase {
-
 	private final RoomAIRepository roomAIRepository;
 	private final RoomAIPromptRepository roomAIPromptRepository;
+	private final SeniorRepository seniorRepository;
 	private final GPTService gptService;
 
 	@Override
 	@Transactional
-	public RoomAIResponse analyzeRoom(Account account, List<RoomAIRequest> roomAIRequest) {
+	public RoomAIResponse analyzeRoom(Long seniorId, List<RoomAIRequest> roomAIRequest) {
+		// 0) Senior 존재 확인
+		Senior senior = seniorRepository.findById(seniorId)
+			.orElseThrow(RoomAINotFoundException::new);
+
 		// 1) RoomAI 엔티티 우선 생성
 		RoomAI roomAI = RoomAI.builder()
-			.account(account)
+			.senior(senior)
 			.build();
 		roomAI = roomAIRepository.save(roomAI);
 
@@ -83,8 +88,8 @@ public class RoomAIService implements RoomAIUseCase {
 	}
 
 	@Override
-	public List<String> getAnalysisDateList(Account account) {
-		List<LocalDateTime> analysisDateList = roomAIRepository.findCreatedAtByAccountId(account.getId());
+	public List<String> getAnalysisDateList(Long seniorId) {
+		List<LocalDateTime> analysisDateList = roomAIRepository.findCreatedAtBySeniorId(seniorId);
 		if (analysisDateList.isEmpty()) return List.of();
 
 		return analysisDateList.stream()
@@ -93,9 +98,9 @@ public class RoomAIService implements RoomAIUseCase {
 	}
 
 	@Override
-	public RoomAIResponse getAnalysisResult(Account account, String date) {
+	public RoomAIResponse getAnalysisResult(Long seniorId, String date) {
 		LocalDateTime createdAt = LocalDateTime.parse(date);
-		RoomAI roomAI = roomAIRepository.findByAccount_IdAndCreatedAt(account.getId(), createdAt)
+		RoomAI roomAI = roomAIRepository.findBySenior_IdAndCreatedAt(seniorId, createdAt)
 			.orElseThrow(RoomAINotFoundException::new);
 
 		return RoomAIResponse.from(roomAI);
