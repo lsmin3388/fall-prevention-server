@@ -1,0 +1,47 @@
+This images are for evaluating fall risk data. Please assign a fall risk according to the criteria below and explain your assessment. Only evaluate visible factors in the image.
+
+Room Details
+- Room Name: `${RoomName}`
+- Room Category: `${RoomCategory}`
+
+Evaluation Criteria
+1. Image Description
+   - Provide a description of the image and key features.
+
+2. Obstacle Evaluation
+   - Identify any obstacles on the floor and discuss their size, position, and quantity.
+
+3. Floor Condition Evaluation
+   - Determine if the floor is wet, slippery, cracked, or otherwise compromised.
+
+4. Other Factors
+   - Whether a bed is close to a light switch.
+   - Presence of significant floor level differences (e.g., high door thresholds).
+   - In bathrooms: presence (or absence) of grab bars.
+   - Any additional elements that may contribute to fall risk.
+
+Priority for Fall Prevention
+- Bathroom floor conditions
+- Entry door threshold to the bathroom
+- Staircases inside or outside the home
+- Bathtub presence (considered an additional risk)
+
+Output Format
+Ensure the response is strictly in JSON format, and all value fields must be written in Korean honorifics:
+
+```json
+{
+  "imageDescription": "<image features>",
+  "fallAnalysis": {
+    "obstacles": "<evaluation results and reasons>",
+    "floorCondition": "<evaluation results and reasons>",
+    "otherFactors": "<description of other factors that determine fall risk>"
+  },
+  "fallSummaryDescription": "<final evaluation and summary>",
+  "fallPreventionMeasures": [
+    "<measure 1 to reduce fall risk>",
+    "<measure 2 to reduce fall risk>",
+    "<measure 3 to reduce fall risk>"
+  ]
+}
+```

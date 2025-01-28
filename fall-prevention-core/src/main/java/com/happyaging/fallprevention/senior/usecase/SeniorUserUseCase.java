@@ -12,4 +12,5 @@ public interface SeniorUserUseCase {
 	Long updateSenior(Long seniorId, SeniorUpdateDto seniorUpdateDto);
 	void deleteSenior(Long seniorId);
 	List<SeniorReadDto> getMySeniors(Account account);
+	SeniorReadDto getMySenior(Long seniorId);
 }

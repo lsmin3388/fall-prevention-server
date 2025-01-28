@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 public class SeniorUserService implements SeniorUserUseCase {
 	private final SeniorRepository seniorRepository;
 
-
 	@Override
 	@Transactional
 	public Long createSenior(Account account, SeniorCreateDto seniorCreateDto) {
@@ -32,9 +31,7 @@ public class SeniorUserService implements SeniorUserUseCase {
 	@Override
 	@Transactional
 	public Long updateSenior(Long seniorId, SeniorUpdateDto seniorUpdateDto) {
-		Senior targetSenior = seniorRepository.findById(seniorId)
-			.orElseThrow(SeniorNotFoundException::new);
-
+		Senior targetSenior = getSenior(seniorId);
 		targetSenior.update(seniorUpdateDto);
 
 		return targetSenior.getId();
@@ -42,9 +39,7 @@ public class SeniorUserService implements SeniorUserUseCase {
 
 	@Override
 	public void deleteSenior(Long seniorId) {
-		Senior targetSenior = seniorRepository.findById(seniorId)
-			.orElseThrow(SeniorNotFoundException::new);
-
+		Senior targetSenior = getSenior(seniorId);
 		seniorRepository.delete(targetSenior);
 	}
 
@@ -52,5 +47,16 @@ public class SeniorUserService implements SeniorUserUseCase {
 	public List<SeniorReadDto> getMySeniors(Account account) {
 		List<Senior> seniors = seniorRepository.findAllByAccount(account);
 		return SeniorReadDto.fromEntities(seniors);
+	}
+
+	@Override
+	public SeniorReadDto getMySenior(Long seniorId) {
+		Senior senior = getSenior(seniorId);
+		return SeniorReadDto.fromEntity(senior);
+	}
+
+	public Senior getSenior(Long seniorId) {
+		return seniorRepository.findById(seniorId)
+			.orElseThrow(SeniorNotFoundException::new);
 	}
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.happyaging.fallprevention.base.BaseAuditEntity;
-import com.happyaging.fallprevention.region.entity.Region;
 import com.happyaging.fallprevention.senior.entity.Senior;
 
 import jakarta.persistence.Column;
@@ -14,12 +13,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,10 +40,6 @@ public class Account extends BaseAuditEntity {
     private String email;
 
     @NotBlank
-    @Pattern(
-        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-        message = "비밀번호는 최소 8자리이며, 대소문자, 숫자, 특수문자를 포함해야 합니다."
-    )
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -59,22 +51,17 @@ public class Account extends BaseAuditEntity {
     @Column(name = "role", nullable = false)
     private AccountRole role;
 
-    @ManyToOne
-    @JoinColumn(name = "region_id")
-    private Region region;
-
     @OneToMany(mappedBy = "account")
     private List<Senior> senior = new ArrayList<>();
 
     @Builder
-    public Account(String username, String email, String password, String phoneNumber, AccountRole role, Region region,
+    public Account(String username, String email, String password, String phoneNumber, AccountRole role,
         List<Senior> senior) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.role = role;
-        this.region = region;
         this.senior = senior;
     }
 }

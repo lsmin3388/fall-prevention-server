@@ -24,6 +24,7 @@ import com.happyaging.fallprevention.senior.usecase.dto.SeniorUpdateDto;
 import com.happyaging.fallprevention.util.api.ApiResponse;
 import com.happyaging.fallprevention.util.api.ApiSuccessResult;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -36,10 +37,13 @@ public class SeniorController {
 	@PostMapping
 	@PreAuthorize("hasRole('USER') and isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<Long>> createSenior(
-		@RequestBody SeniorCreateDto createDto,
+		@Valid @RequestBody SeniorCreateDto createDto,
 		@LoggedInUser PrincipalDetails principalDetails
 	) {
-		Long responseBody = seniorUserUseCase.createSenior(principalDetails.account(), createDto);
+		Long responseBody = seniorUserUseCase.createSenior(
+			principalDetails.account(),
+			createDto
+		);
 
 		return ResponseEntity
 			.status(HttpStatus.CREATED)
@@ -48,21 +52,22 @@ public class SeniorController {
 
 	@PutMapping("/{seniorId}")
 	@PreAuthorize("hasRole('USER') and isAuthenticated()")
-	public ResponseEntity<ApiSuccessResult<Long>> createSenior(
+	public ResponseEntity<ApiSuccessResult<Long>> updateSenior(
 		@RequestBody SeniorUpdateDto updateDto,
-		@PathVariable Long seniorId
+		@PathVariable @MySenior Long seniorId
 	) {
 		Long responseBody = seniorUserUseCase.updateSenior(seniorId, updateDto);
 
 		return ResponseEntity
-			.status(HttpStatus.CREATED)
+			.status(HttpStatus.OK)
 			.body(ApiResponse.success(HttpStatus.CREATED, responseBody));
 	}
 
 	@DeleteMapping("/{seniorId}")
 	@PreAuthorize("hasRole('USER') and isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<Object>> deleteSenior(
-		@PathVariable Long seniorId
+		@PathVariable Long seniorId,
+		@LoggedInUser PrincipalDetails principalDetails
 	) {
 		seniorUserUseCase.deleteSenior(seniorId);
 
@@ -71,12 +76,25 @@ public class SeniorController {
 			.body(ApiResponse.success(HttpStatus.OK));
 	}
 
-	@GetMapping("/my")
+	@GetMapping("/me")
 	@PreAuthorize("hasRole('USER') and isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<List<SeniorReadDto>>> getMySeniors(
 		@LoggedInUser PrincipalDetails principalDetails
 	) {
 		List<SeniorReadDto> responseBody = seniorUserUseCase.getMySeniors(principalDetails.account());
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiResponse.success(HttpStatus.OK, responseBody));
+	}
+
+	@GetMapping("/me/{seniorId}")
+	@PreAuthorize("hasRole('USER') and isAuthenticated()")
+	public ResponseEntity<ApiSuccessResult<SeniorReadDto>> getMySenior(
+		@PathVariable @MySenior Long seniorId
+	) {
+		SeniorReadDto responseBody = seniorUserUseCase.getMySenior(seniorId);
+
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.body(ApiResponse.success(HttpStatus.OK, responseBody));
@@ -86,6 +104,7 @@ public class SeniorController {
 	@PreAuthorize("hasRole('ADMIN') and isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<List<SeniorReadDto>>> getAllSeniors() {
 		List<SeniorReadDto> responseBody = seniorAdminUseCase.getSeniors();
+
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.body(ApiResponse.success(HttpStatus.OK, responseBody));

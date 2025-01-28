@@ -13,8 +13,10 @@ import com.happyaging.fallprevention.annotation.LoggedInUser;
 import com.happyaging.fallprevention.security.details.PrincipalDetails;
 
 import jakarta.annotation.Nonnull;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class LoggedInUserArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override
