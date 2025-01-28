@@ -1,4 +1,4 @@
-package com.happyaging.fallprevention.roomAI.dto;
+package com.happyaging.fallprevention.roomAI.usecase.dto.response;
 
 import java.util.List;
 
@@ -12,8 +12,7 @@ public record RoomAIResponse(
 	Long roomAIId,
 	List<RoomAIPromptResponse> roomAIPrompts
 ) {
-	public static RoomAIResponse from(RoomAI roomAI) {
-		List<RoomAIPrompt> roomAIPrompts = roomAI.getRoomAIPrompt();
+	public static RoomAIResponse from(RoomAI roomAI, List<RoomAIPrompt> roomAIPrompts) {
 		List<RoomAIPromptResponse> roomAIPromptResponses = roomAIPrompts.stream()
 			.map(RoomAIPromptResponse::from)
 			.toList();
@@ -23,4 +22,16 @@ public record RoomAIResponse(
 			.roomAIPrompts(roomAIPromptResponses)
 			.build();
 	}
+
+	public static RoomAIResponse from(RoomAI roomAI) {
+		List<RoomAIPromptResponse> roomAIPromptResponses = roomAI.getRoomAIPrompt().stream()
+			.map(RoomAIPromptResponse::from)
+			.toList();
+
+		return RoomAIResponse.builder()
+			.roomAIId(roomAI.getId())
+			.roomAIPrompts(roomAIPromptResponses)
+			.build();
+	}
+
 }

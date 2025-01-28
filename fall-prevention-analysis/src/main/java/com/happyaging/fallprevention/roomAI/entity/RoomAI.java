@@ -1,8 +1,10 @@
 package com.happyaging.fallprevention.roomAI.entity;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.happyaging.fallprevention.account.entity.Account;
+import com.happyaging.fallprevention.base.BaseAuditEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,7 +25,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "room_ai")
-public class RoomAI {
+public class RoomAI extends BaseAuditEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "room_ai_id")
@@ -33,21 +36,20 @@ public class RoomAI {
 	@JoinColumn(name = "account_id")
 	private Account account;
 
+	/**
+	 * 기존: private List<RoomAIPrompt> roomAIPrompt;
+	 * 변경: Set<RoomAIPrompt> roomAIPrompt;
+	 */
 	@OneToMany(
 		mappedBy = "roomAI",
 		cascade = CascadeType.ALL,
 		orphanRemoval = true
 	)
-	private List<RoomAIPrompt> roomAIPrompt;
+	private Set<RoomAIPrompt> roomAIPrompt = new HashSet<>();
 
 	@Builder
-	public RoomAI(Long id, Account account, List<RoomAIPrompt> roomAIPrompt) {
+	public RoomAI(Long id, Account account) {
 		this.id = id;
 		this.account = account;
-		this.roomAIPrompt = roomAIPrompt;
-	}
-
-	public void connectRoomAIPrompt(List<RoomAIPrompt> roomAIPrompt) {
-		this.roomAIPrompt = roomAIPrompt;
 	}
 }

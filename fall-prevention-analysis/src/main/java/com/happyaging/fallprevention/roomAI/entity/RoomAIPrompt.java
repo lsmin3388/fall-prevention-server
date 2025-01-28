@@ -1,6 +1,9 @@
 package com.happyaging.fallprevention.roomAI.entity;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "room_ai_prompt")
 public class RoomAIPrompt {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "room_ai_prompt_id")
@@ -38,27 +42,34 @@ public class RoomAIPrompt {
 	@Column(name = "response")
 	private String response;
 
+	/**
+	 * 기존: private List<RoomAIImage> roomAIImages;
+	 * 변경: private Set<RoomAIImage> roomAIImages;
+	 */
 	@OneToMany(
 		mappedBy = "roomAIPrompt",
 		cascade = CascadeType.ALL,
 		orphanRemoval = true
 	)
-	private List<RoomAIImage> roomAIImages;
+	private Set<RoomAIImage> roomAIImages = new HashSet<>();
 
 	@ManyToOne
 	@JoinColumn(name = "room_ai_id")
 	private RoomAI roomAI;
 
 	@Builder
-	public RoomAIPrompt(Long id, String roomName, RoomCategory roomCategory, String response,
-		List<RoomAIImage> roomAIImages, RoomAI roomAI) {
+	public RoomAIPrompt(
+		Long id, String roomName, RoomCategory roomCategory,
+		String response, Set<RoomAIImage> roomAIImages, RoomAI roomAI
+	) {
 		this.id = id;
 		this.roomName = roomName;
 		this.roomCategory = roomCategory;
 		this.response = response;
-		this.roomAIImages = roomAIImages;
+		if (roomAIImages != null) this.roomAIImages = roomAIImages;
 		this.roomAI = roomAI;
 	}
+
 
 	public void updateResponse(String response) {
 		this.response = response;
@@ -67,6 +78,10 @@ public class RoomAIPrompt {
 	public List<String> getImagesFilename() {
 		return roomAIImages.stream()
 			.map(RoomAIImage::getFilename)
-			.toList();
+			.collect(Collectors.toList());
+	}
+
+	public void connectRoomAI(RoomAI roomAI) {
+		this.roomAI = roomAI;
 	}
 }
