@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.happyaging.fallprevention.security.filter.AccessTokenAuthorizationFilter;
-import com.happyaging.fallprevention.security.filter.RefreshTokenReissueFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,12 +21,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 	private final AccessTokenAuthorizationFilter accessTokenAuthorizationFilter;
-	private final RefreshTokenReissueFilter refreshTokenReissueFilter;
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(
-		HttpSecurity httpSecurity
-	) throws Exception {
+	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity
 			.cors(Customizer.withDefaults())
 			.csrf(AbstractHttpConfigurer::disable)
@@ -39,7 +35,6 @@ public class SecurityConfig {
 				.requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
 				.anyRequest().authenticated())
 			.addFilterBefore(accessTokenAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
-			.addFilterBefore(refreshTokenReissueFilter, AccessTokenAuthorizationFilter.class)
 			.httpBasic(AbstractHttpConfigurer::disable);
 
 		httpSecurity.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));

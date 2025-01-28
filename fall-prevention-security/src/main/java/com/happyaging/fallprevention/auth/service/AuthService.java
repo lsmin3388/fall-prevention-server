@@ -16,6 +16,7 @@ import com.happyaging.fallprevention.token.dto.JwtTokens;
 import com.happyaging.fallprevention.token.service.AuthenticationService;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -40,6 +41,7 @@ public class AuthService implements AuthUseCase {
 	}
 
 	@Override
+	@Transactional
 	public JwtTokens login(LoginRequestDto requestDto, HttpServletResponse response) {
 		Authentication authentication = authenticationManager.authenticate(
 			new UsernamePasswordAuthenticationToken(requestDto.email(), requestDto.password())
@@ -54,5 +56,24 @@ public class AuthService implements AuthUseCase {
 		response.addCookie(refreshTokenCookie);
 
 		return jwtTokens;
+	}
+
+	@Override
+	@Transactional
+	public JwtTokens refresh(HttpServletRequest request, HttpServletResponse response) {
+		// 1) Refresh Token (쿠키 or 헤더) 추출
+		String refreshTokenValue = authenticationService.resolveRefreshToken(request);
+
+		// 2) 새 Access / Refresh 발급
+		JwtTokens newTokens = authenticationService.reissueTokens(refreshTokenValue);
+
+		// 3) 쿠키에  세팅 (Refresh Token 은 httpOnly)
+		Cookie accessTokenCookie = authenticationService.createCookie(newTokens.accessToken());
+		Cookie refreshTokenCookie = authenticationService.createCookie(newTokens.refreshToken());
+
+		response.addCookie(accessTokenCookie);
+		response.addCookie(refreshTokenCookie);
+
+		return newTokens;
 	}
 }
