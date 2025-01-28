@@ -97,21 +97,29 @@ public class JwtTokenService {
 		String bearerToken = request.getHeader(jwtProperties.getAuthHeader());
 
 		if (bearerToken != null && bearerToken.startsWith(jwtProperties.getBearerType())) {
-			return bearerToken.replace(jwtProperties.getBearerType(), "").trim();
+			return bearerToken.replaceAll(jwtProperties.getBearerType(), "").trim();
 		}
 
 		return null;
 	}
 
 	public String resolveRefreshToken(HttpServletRequest request) {
+		// For Web
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals(TokenType.REFRESH_TOKEN.name())) {
+				if (TokenType.REFRESH_TOKEN.name().equals(cookie.getName())) {
 					return cookie.getValue();
 				}
 			}
 		}
+
+		// For App
+		String bearerToken = request.getHeader("Authorization");
+		if (bearerToken != null && bearerToken.startsWith(jwtProperties.getBearerType())) {
+			return bearerToken.replaceAll(jwtProperties.getBearerType(), "").trim();
+		}
+
 		return null;
 	}
 

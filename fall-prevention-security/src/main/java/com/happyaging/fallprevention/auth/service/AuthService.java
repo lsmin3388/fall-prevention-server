@@ -15,44 +15,47 @@ import com.happyaging.fallprevention.auth.usecase.dto.RegisterRequestDto;
 import com.happyaging.fallprevention.token.dto.JwtTokens;
 import com.happyaging.fallprevention.token.service.AuthenticationService;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService implements AuthUseCase {
-	private final AccountRepository accountRepository;
 
+	private final AccountRepository accountRepository;
 	private final AuthenticationManager authenticationManager;
 	private final AuthenticationService authenticationService;
 	private final PasswordEncoder passwordEncoder;
 
-
 	@Override
 	@Transactional
 	public void register(RegisterRequestDto requestDto) {
-		if (accountRepository.existsByEmail(requestDto.email()))
+		if (accountRepository.existsByEmail(requestDto.email())) {
 			throw new EmailDuplicatedException();
-
+		}
 		accountRepository.save(requestDto.toEntity(passwordEncoder));
 	}
 
 	@Override
-	public JwtTokens login(LoginRequestDto requestDto, HttpServletResponse response) {
+	@Transactional
+	public JwtTokens login(LoginRequestDto requestDto) {
 		Authentication authentication = authenticationManager.authenticate(
 			new UsernamePasswordAuthenticationToken(requestDto.email(), requestDto.password())
 		);
 
-		JwtTokens jwtTokens = authenticationService.issueToken(authentication);
+		return authenticationService.issueToken(authentication);
+	}
 
-		Cookie accessTokenCookie = authenticationService.createCookie(jwtTokens.accessToken());
-		Cookie refreshTokenCookie = authenticationService.createCookie(jwtTokens.refreshToken());
+	@Override
+	@Transactional
+	public JwtTokens refresh(String refreshToken) {
+		return authenticationService.reissueTokens(refreshToken);
+	}
 
-		response.addCookie(accessTokenCookie);
-		response.addCookie(refreshTokenCookie);
-
-		return jwtTokens;
+	@Override
+	@Transactional
+	public void logout(String refreshToken) {
+		authenticationService.logout(refreshToken);
 	}
 }
+

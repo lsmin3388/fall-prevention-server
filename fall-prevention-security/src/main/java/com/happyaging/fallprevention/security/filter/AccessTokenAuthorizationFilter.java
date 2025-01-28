@@ -39,6 +39,11 @@ public class AccessTokenAuthorizationFilter extends GenericFilterBean {
             return;
         }
 
+        if (servletRequest.getRequestURI().contains("/auth/refresh") || servletRequest.getRequestURI().contains("/auth/logout")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         try {
             String accessToken = jwtTokenService.resolveAccessToken(servletRequest);
             if (accessToken != null) {
