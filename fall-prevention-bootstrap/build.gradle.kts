@@ -1,3 +1,7 @@
+plugins {
+    id("org.springframework.boot") version "3.3.5"
+}
+
 springBoot {
     mainClass.set("com.happyaging.fallprevention.FallPreventionApplication")
 }

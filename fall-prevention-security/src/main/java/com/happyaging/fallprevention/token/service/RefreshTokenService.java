@@ -18,7 +18,7 @@ public class RefreshTokenService {
 	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Transactional(readOnly = true)
-	@Cacheable(value = "refreshTokens", key = "#email", unless = "#result == null")
+	@Cacheable(value = "refreshTokens", key = "#p0", unless = "#result == null")
 	public String getRefreshToken(String email) {
 		return refreshTokenRepository.findByEmail(email)
 			.map(RefreshToken::getRefreshToken)
@@ -26,14 +26,14 @@ public class RefreshTokenService {
 	}
 
 	@Transactional
-	@CachePut(value = "refreshTokens", key = "#refreshToken.email")
+	@CachePut(value = "refreshTokens", key = "#p0.email")
 	public String updateRefreshToken(RefreshToken refreshToken) {
 		refreshTokenRepository.save(refreshToken);
 		return refreshToken.getRefreshToken();
 	}
 
 	@Transactional
-	@CacheEvict(value = "refreshTokens", key = "#email")
+	@CacheEvict(value = "refreshTokens", key = "#p0")
 	public void deleteRefreshToken(String email) {
 		refreshTokenRepository.deleteById(email);
 	}
