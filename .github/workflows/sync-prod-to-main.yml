@@ -18,5 +18,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin
           git checkout main
-          git merge --ff-only prod
+          git merge prod --allow-unrelated-histories
           git push origin main
