@@ -23,8 +23,13 @@ jobs:
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /home/ubuntu/fall-prevention  # docker-compose.yml 위치
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/fall-prevention:latest
-            docker compose pull
-            docker compose up -d --build
+            
+            # Docker Hub 로그인
+            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          
+            # Docker 이미지 pull, compose pull, up
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/fall-prevention:latest
+            sudo docker compose pull
+            sudo docker compose up -d --build
             exit
           EOF
