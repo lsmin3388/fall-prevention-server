@@ -5,7 +5,7 @@ on:
     branches: [ "prod" ]
 
 jobs:
-  deploy:
+  deploy-to-prod:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,13 +21,8 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          # 서버에 접속하여 최신 이미지를 Pull하고, docker-compose up -d 실행
-          # 예) prod 환경에서는 master tag나 prod 태그로 빌드된 이미지를 사용하도록 할 수 있음
-          # 만약 위의 2.2에서 push 시 태그를 "latest"나 "prod"로도 push 했다면
-          # 아래는 예시로 latest 태그를 기준으로 배포한다고 가정
-
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd /home/ubuntu/fall-prevention
+            cd /home/ubuntu/fall-prevention  # docker-compose.yml 위치
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/fall-prevention:latest
             docker compose pull
             docker compose up -d --build
