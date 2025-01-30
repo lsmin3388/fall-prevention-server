@@ -2,8 +2,10 @@ name: Sync Prod to Main
 
 on:
   push:
-    branches:
-      - prod
+    branches: [ "prod" ]
+
+permissions:
+  contents: write
 
 jobs:
   merge-to-main:
