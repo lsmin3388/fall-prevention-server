@@ -1,0 +1,25 @@
+spring:
+  config:
+    activate:
+      on-profile: core-prod
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show-sql: true
+        format_sql: true
+        jdbc:
+          time_zone: Asia/Seoul
+
+logging:
+  level:
+    hibernate.SQL: WARN
+    type.descriptor.sql.BasicBinder: ERROR

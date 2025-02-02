@@ -1,0 +1,29 @@
+spring:
+  config:
+    activate:
+      on-profile: core-local
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:~/test
+    username: sa
+    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show-sql: true
+        format_sql: true
+        jdbc:
+          time_zone: Asia/Seoul
+
+logging:
+  level:
+    hibernate.SQL: DEBUG
+    type.descriptor.sql.BasicBinder: TRACE
