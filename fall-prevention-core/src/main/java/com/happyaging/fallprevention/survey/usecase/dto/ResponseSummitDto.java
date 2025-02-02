@@ -1,9 +1,9 @@
 package com.happyaging.fallprevention.survey.usecase.dto;
 
+import java.util.List;
+
 import com.happyaging.fallprevention.survey.entity.question.Question;
 import com.happyaging.fallprevention.survey.entity.reponse.Response;
-
-import java.util.List;
 
 public record ResponseSummitDto(
         Long questionId,

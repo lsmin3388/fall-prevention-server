@@ -1,9 +1,9 @@
 package com.happyaging.fallprevention.survey.usecase;
 
-import com.happyaging.fallprevention.survey.usecase.dto.SurveySummitDto;
-import com.happyaging.fallprevention.survey.usecase.dto.SurveyReadDto;
-
 import java.util.List;
+
+import com.happyaging.fallprevention.survey.usecase.dto.SurveyReadDto;
+import com.happyaging.fallprevention.survey.usecase.dto.SurveySummitDto;
 
 public interface SurveyUserUseCase {
     Long createSurvey(SurveySummitDto surveyCreateDto);

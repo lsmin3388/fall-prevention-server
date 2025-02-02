@@ -76,7 +76,8 @@ public class AccessTokenAuthorizationFilter extends GenericFilterBean {
         return
             uri.contains("/auth/refresh") ||
             uri.contains("/auth/logout") ||
-            uri.contains("/auth/register");
+            uri.contains("/auth/register") ||
+            uri.contains("/auth/login");
     }
 
     private void writeErrorResponse(HttpServletResponse response, int statusCode, String errorMsg) throws IOException {

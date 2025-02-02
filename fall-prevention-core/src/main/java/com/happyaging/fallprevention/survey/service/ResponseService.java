@@ -1,5 +1,10 @@
 package com.happyaging.fallprevention.survey.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.happyaging.fallprevention.survey.entity.question.Question;
 import com.happyaging.fallprevention.survey.entity.question.QuestionOption;
 import com.happyaging.fallprevention.survey.entity.reponse.Response;
@@ -11,12 +16,9 @@ import com.happyaging.fallprevention.survey.persistence.ResponseOptionRepository
 import com.happyaging.fallprevention.survey.persistence.ResponseRepository;
 import com.happyaging.fallprevention.survey.usecase.ResponseUseCase;
 import com.happyaging.fallprevention.survey.usecase.dto.ResponseSummitDto;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

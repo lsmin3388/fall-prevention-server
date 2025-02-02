@@ -1,12 +1,25 @@
 package com.happyaging.fallprevention.survey.entity.question;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.hibernate.annotations.SQLDelete;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
