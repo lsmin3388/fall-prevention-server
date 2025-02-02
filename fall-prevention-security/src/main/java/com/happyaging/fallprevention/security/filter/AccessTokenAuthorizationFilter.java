@@ -7,8 +7,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.happyaging.fallprevention.exception.AccessTokenExpiredException;
-import com.happyaging.fallprevention.exception.AccessTokenInvalidException;
 import com.happyaging.fallprevention.token.service.JwtTokenService;
 
 import io.jsonwebtoken.Claims;
@@ -20,6 +18,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,19 +26,18 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Component
 public class AccessTokenAuthorizationFilter extends GenericFilterBean {
+
     private final JwtTokenService jwtTokenService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
         throws IOException, ServletException {
+
         HttpServletRequest servletRequest = (HttpServletRequest) request;
+        HttpServletResponse servletResponse = (HttpServletResponse) response;
 
-		if ("OPTIONS".equalsIgnoreCase(servletRequest.getMethod())) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        if (servletRequest.getRequestURI().contains("/auth/refresh") || servletRequest.getRequestURI().contains("/auth/logout")) {
+        // Pre-flight 요청, 혹은 특정 URL은 필터 통과 시키고 바로 진행
+        if (isPreflightRequest(servletRequest) || isRefreshOrLogoutRequest(servletRequest)) {
             chain.doFilter(request, response);
             return;
         }
@@ -54,14 +52,41 @@ public class AccessTokenAuthorizationFilter extends GenericFilterBean {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             chain.doFilter(request, response);
+
         } catch (ExpiredJwtException e) {
             log.warn("Access token has expired: {}", e.getMessage());
-            throw new AccessTokenExpiredException();
+            writeErrorResponse(servletResponse, HttpServletResponse.SC_UNAUTHORIZED, "ACCESS_TOKEN_EXPIRED");
+
         } catch (JwtException e) {
             log.warn("Invalid access token: {}", e.getMessage());
-            throw new AccessTokenInvalidException();
+            writeErrorResponse(servletResponse, HttpServletResponse.SC_UNAUTHORIZED, "ACCESS_TOKEN_INVALID");
+
         } catch (Exception e) {
-            log.error("Error in AccessTokenValidationFilter: {}", e.getMessage(), e);
+            log.error("Error in AccessTokenAuthorizationFilter: {}", e.getMessage(), e);
+            writeErrorResponse(servletResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
         }
+    }
+
+    private boolean isPreflightRequest(HttpServletRequest request) {
+        return "OPTIONS".equalsIgnoreCase(request.getMethod());
+    }
+
+    private boolean isRefreshOrLogoutRequest(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        return
+            uri.contains("/auth/refresh") ||
+            uri.contains("/auth/logout") ||
+            uri.contains("/auth/register");
+    }
+
+    private void writeErrorResponse(HttpServletResponse response, int statusCode, String errorMsg) throws IOException {
+        response.setStatus(statusCode);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(String.format("""
+            {
+              "errorMsg": "%s"
+            }
+            """, errorMsg));
+        response.getWriter().flush();
     }
 }
