@@ -19,7 +19,9 @@ derby.log
 .gradle
 .gradletasknamecache
 /build
+build/
 buildSrc/build
+
 fall-prevention-*/build
 /framework-*/build
 /integration-tests/build
@@ -94,7 +96,6 @@ Temporary Items
 
 # Environment Variables
 .env
-
 
 ### for dev
 test.sh

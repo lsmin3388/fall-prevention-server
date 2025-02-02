@@ -1,7 +1,0 @@
-spring:
-  profiles:
-    group:
-      local-profile: local, core-local, security-local
-      dev-profile: dev, core-dev, security-dev
-      prod-profile: prod, core-prod, security-prod
-    default: local-profile
