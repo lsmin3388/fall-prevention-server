@@ -1,10 +1,10 @@
 package com.happyaging.fallprevention.survey.usecase.question;
 
-import com.happyaging.fallprevention.survey.entity.question.Question;
-import com.happyaging.fallprevention.survey.usecase.dto.question.QuestionRequestDto;
-import com.happyaging.fallprevention.survey.usecase.dto.question.QuestionReorderDto;
-
 import java.util.List;
+
+import com.happyaging.fallprevention.survey.entity.question.Question;
+import com.happyaging.fallprevention.survey.usecase.dto.question.QuestionReorderDto;
+import com.happyaging.fallprevention.survey.usecase.dto.question.QuestionRequestDto;
 
 public interface QuestionAdminUseCase {
     Question createQuestion(QuestionRequestDto questionDto);
