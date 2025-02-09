@@ -1,32 +1,16 @@
 package com.happyaging.fallprevention.question;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.happyaging.fallprevention.product.entity.ProductQuestion;
-import com.happyaging.fallprevention.product.service.ProductService;
-import com.happyaging.fallprevention.product.usecase.dto.ProductQuestionDto;
-import com.happyaging.fallprevention.survey.entity.question.Question;
-import com.happyaging.fallprevention.survey.mapper.QuestionMapper;
-import com.happyaging.fallprevention.survey.usecase.dto.question.QuestionReorderDto;
-import com.happyaging.fallprevention.survey.usecase.dto.question.QuestionRequestDto;
-import com.happyaging.fallprevention.survey.usecase.dto.question.QuestionResponseDto;
-import com.happyaging.fallprevention.survey.usecase.dto.question.SetNextQuestionDto;
-import com.happyaging.fallprevention.survey.usecase.question.QuestionAdminUseCase;
+import com.happyaging.fallprevention.survey.question.usecase.QuestionUseCase;
+import com.happyaging.fallprevention.survey.question.usecase.dto.request.QuestionSaveDto;
+import com.happyaging.fallprevention.survey.question.usecase.dto.response.QuestionReadDto;
 import com.happyaging.fallprevention.util.api.ApiResponse;
 import com.happyaging.fallprevention.util.api.ApiSuccessResult;
 
@@ -37,114 +21,70 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/question")
 @RequiredArgsConstructor
 public class QuestionController {
-    private final QuestionAdminUseCase questionAdminUseCase;
-    private final ProductService productService;
 
+    private final QuestionUseCase questionUseCase;
+
+    /**
+     * 질문 생성 - ADMIN 전용
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') and isAuthenticated()")
-    public QuestionResponseDto createQuestion(@Valid @RequestBody QuestionRequestDto questionDto) {
-        Question createdQuestion = questionAdminUseCase.createQuestion(questionDto);
-
-        // 질문과 물품 연결
-        List<ProductQuestionDto> productQuestionDtoList = questionDto.products();
-        if (productQuestionDtoList != null) {
-            List<ProductQuestion> productQuestions = new ArrayList<>();
-            for (ProductQuestionDto productQuestionDto : productQuestionDtoList) {
-                ProductQuestion productQuestion = productService.connectQuestion(
-                        productQuestionDto.id(),
-                        createdQuestion.getId(),
-                        productQuestionDto.priority()
-                );
-                productQuestions.add(productQuestion);
-            }
-
-            return QuestionMapper.toDto(createdQuestion, productQuestions);
-        }
-        return QuestionMapper.toDto(createdQuestion);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiSuccessResult<QuestionResponseDto>> getQuestion(@PathVariable Long id) {
-        Question question = questionAdminUseCase.getQuestionById(id);
-        List<ProductQuestion> productQuestions = productService.getAllByQuestionId(id);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(HttpStatus.OK, QuestionMapper.toDto(question, productQuestions)));
-    }
-
-    @GetMapping("/list")
-    public ResponseEntity<ApiSuccessResult<List<QuestionResponseDto>>> getAllQuestions() {
-        List<Question> questions = questionAdminUseCase.getAllQuestions();
-
-        List<QuestionResponseDto> questionResponseDtoList = questions.stream()
-                .map(question -> {
-                    List<ProductQuestion> productQuestions =
-                            productService.getAllByQuestionId(question.getId());
-
-                    return QuestionMapper.toDto(question, productQuestions);
-                })
-                .collect(Collectors.toList());
-
+    public ResponseEntity<ApiSuccessResult<Long>> createQuestion(
+        @Valid @RequestBody QuestionSaveDto questionSaveDto) {
+        Long questionId = questionUseCase.createQuestion(questionSaveDto);
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ApiResponse.success(HttpStatus.OK, questionResponseDtoList));
+            .status(HttpStatus.CREATED)
+            .body(ApiResponse.success(HttpStatus.CREATED, questionId));
     }
 
+    /**
+     * 질문 수정 - ADMIN 전용
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and isAuthenticated()")
-    public ResponseEntity<ApiSuccessResult<QuestionResponseDto>> updateQuestion(
-            @PathVariable Long id,
-            @Valid @RequestBody  QuestionRequestDto questionDto
-    ) {
-        Question updatedQuestion = questionAdminUseCase.createQuestion(questionDto);
-        questionAdminUseCase.updateQuestion(id, updatedQuestion);
-
-        List<ProductQuestionDto> productQuestionDtoList = questionDto.products();
-        if (productQuestionDtoList != null) {
-            List<ProductQuestion> productQuestions = new ArrayList<>();
-            for (ProductQuestionDto productQuestionDto : productQuestionDtoList) {
-                ProductQuestion productQuestion = productService.connectQuestion(
-                        productQuestionDto.id(),
-                        updatedQuestion.getId(),
-                        productQuestionDto.priority()
-                );
-                productQuestions.add(productQuestion);
-            }
-
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponse.success(HttpStatus.OK, QuestionMapper.toDto(updatedQuestion, productQuestions)));
-        }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(HttpStatus.OK, QuestionMapper.toDto(updatedQuestion)));
+    public ResponseEntity<ApiSuccessResult<Long>> updateQuestion(
+        @PathVariable("id") Long id,
+        @Valid @RequestBody QuestionSaveDto questionSaveDto) {
+        Long updatedId = questionUseCase.updateQuestion(id, questionSaveDto);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(ApiResponse.success(HttpStatus.OK, updatedId));
     }
 
-    @DeleteMapping("/{questionId}")
+    /**
+     * 질문 삭제 - ADMIN 전용
+     */
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and isAuthenticated()")
-    public ResponseEntity<ApiSuccessResult<Long>> deleteQuestion(@PathVariable Long questionId) {
-        Long deletedQuestionId = questionAdminUseCase.deleteAndReorderQuestion(questionId);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(HttpStatus.OK, deletedQuestionId));
+    public ResponseEntity<ApiSuccessResult<String>> deleteQuestion(@PathVariable("id") Long id) {
+        questionUseCase.deleteQuestion(id);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(ApiResponse.success(HttpStatus.OK, "Question deleted successfully"));
     }
 
-    @PutMapping
-    @PreAuthorize("hasRole('ADMIN') and isAuthenticated()")
-    public ResponseEntity<ApiSuccessResult<Boolean>> reorderQuestions(
-            @RequestBody List<QuestionReorderDto> reorderList
-    ) {
-        questionAdminUseCase.reorderQuestions(reorderList);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(HttpStatus.OK, true));
+
+    /**
+     * 질문 조회 - USER 전용 (ADMIN도 포함)
+     */
+    @GetMapping
+    @PreAuthorize("hasRole('USER') and isAuthenticated()")
+    public ResponseEntity<ApiSuccessResult<QuestionReadDto>> getQuestion(@PathVariable("id") Long id) {
+        QuestionReadDto questions = questionUseCase.getQuestion(id);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(ApiResponse.success(HttpStatus.OK, questions));
     }
 
-    @PutMapping("/next-question")
-    @ResponseBody
-    public QuestionResponseDto updateNextQuestionOption(@Valid @RequestBody SetNextQuestionDto setNextQuestionDto) {
-        Question updatedQuestion = questionAdminUseCase.updateNextQuestionOption(
-                setNextQuestionDto.currentQuestionId(),
-                setNextQuestionDto.selectedOptionId(),
-                setNextQuestionDto.nextQuestionId());
-
-        return QuestionMapper.toDto(updatedQuestion);
+    /**
+     * 전체 질문 조회 - USER 전용 (ADMIN도 포함)
+     */
+    @GetMapping
+    @PreAuthorize("hasRole('USER') and isAuthenticated()")
+    public ResponseEntity<ApiSuccessResult<List<QuestionReadDto>>> getAllQuestions() {
+        List<QuestionReadDto> questions = questionUseCase.getAllQuestions();
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(ApiResponse.success(HttpStatus.OK, questions));
     }
-
 }
