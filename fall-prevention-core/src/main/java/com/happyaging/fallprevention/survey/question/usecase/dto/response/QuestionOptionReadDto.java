@@ -14,10 +14,13 @@ public record QuestionOptionReadDto(
 	Integer nextQuestionNumber
 ) {
 	public static QuestionOptionReadDto from(Option option) {
+		Integer nextQ = (option.getNextQuestion() == null)
+			? null
+			: option.getNextQuestion().getQuestionNumber();
 		return QuestionOptionReadDto.builder()
 			.optionNumber(option.getId().getOptionNumber())
 			.content(option.getContent())
-			.nextQuestionNumber(option.getNextQuestion().getQuestionNumber())
+			.nextQuestionNumber(nextQ)
 			.build();
 	}
 

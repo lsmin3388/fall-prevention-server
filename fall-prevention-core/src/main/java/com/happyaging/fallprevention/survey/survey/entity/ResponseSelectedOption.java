@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,7 +32,10 @@ public class ResponseSelectedOption {
 
 	// 선택된 Option (객관식 옵션)
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "option_id", nullable = false)
+	@JoinColumns({
+		@JoinColumn(name = "question_id", referencedColumnName = "question_id"),
+		@JoinColumn(name = "option_number", referencedColumnName = "option_number")
+	})
 	private Option option;
 
 	@Builder

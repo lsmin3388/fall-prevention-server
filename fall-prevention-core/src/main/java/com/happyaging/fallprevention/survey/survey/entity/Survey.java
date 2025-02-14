@@ -1,5 +1,6 @@
 package com.happyaging.fallprevention.survey.survey.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.happyaging.fallprevention.base.BaseAuditEntity;
@@ -36,7 +37,7 @@ public class Survey extends BaseAuditEntity {
     private Senior senior;
 
     @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Response> responses;
+    private List<Response> responses = new ArrayList<>();
 
     private String pdfUrl;
 

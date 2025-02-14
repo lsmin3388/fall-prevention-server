@@ -1,5 +1,7 @@
 package com.happyaging.fallprevention.survey.question.entity;
 
+import com.happyaging.fallprevention.survey.question.exception.IncorrectEnumException;
+
 import lombok.Getter;
 
 @Getter
@@ -23,6 +25,6 @@ public enum QuestionCategory {
                 return q;
             }
         }
-        return null;
+        throw new IncorrectEnumException();
     }
 }

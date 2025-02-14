@@ -58,9 +58,6 @@ public class Question {
 
     // 객관식일 때 선택지
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    /**
-     * EmbeddedId(OptionId)의 필드 중 'optionNumber' 기준으로 정렬.
-     */
     @OrderBy("id.optionNumber ASC")
     private List<Option> options;
 

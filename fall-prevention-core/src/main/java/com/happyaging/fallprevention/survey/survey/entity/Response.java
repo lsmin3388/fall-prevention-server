@@ -1,5 +1,6 @@
 package com.happyaging.fallprevention.survey.survey.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.happyaging.fallprevention.survey.question.entity.Question;
@@ -47,7 +48,7 @@ public class Response {
 
     // Option (주관식인 경우 null)
     @OneToMany(mappedBy = "response", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ResponseSelectedOption> options;
+    private List<ResponseSelectedOption> options = new ArrayList<>();
 
     // 응답 값(주관식 텍스트 입력)
     @Column(length = 4000)
@@ -59,7 +60,7 @@ public class Response {
         this.id = id;
         this.survey = survey;
         this.question = question;
-        this.options = options;
+        this.options = (options != null) ? options : new ArrayList<>();
         this.answerText = answerText;
     }
 }

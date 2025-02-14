@@ -2,6 +2,7 @@ package com.happyaging.fallprevention.survey.survey.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,10 +79,13 @@ public class SurveyService implements SurveyUseCase {
 		if (surveys.isEmpty()) {
 			return List.of();
 		}
+		// seniorId가 일치하는 설문만 필터링
 		return surveys.stream()
+			.filter(survey -> survey.getSenior().getId().equals(seniorId))
 			.map(SurveyReadDto::of)
-			.toList();
+			.collect(Collectors.toList());
 	}
+
 
 	@Override
 	@Transactional
