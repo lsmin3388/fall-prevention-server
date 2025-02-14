@@ -27,7 +27,7 @@ public class StorageController {
 
     @PostMapping("/images")
     public ResponseEntity<ApiSuccessResult<String>> uploadImage(
-            @RequestPart MultipartFile image
+            @RequestPart("image") MultipartFile image
     ) {
         String imageName = storageService.storeImage(image);
         return ResponseEntity

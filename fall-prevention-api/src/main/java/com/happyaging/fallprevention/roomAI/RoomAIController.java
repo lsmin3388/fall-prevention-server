@@ -32,7 +32,7 @@ public class RoomAIController {
 	@PostMapping("/{seniorId}")
 	@PreAuthorize("hasRole('USER') and isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<RoomAIResponse>> analyzeRoom(
-		@PathVariable("seniorId") @MySenior Long seniorId,
+		@MySenior @PathVariable("seniorId") Long seniorId,
 		@Valid @RequestBody List<RoomAIRequest> requestDto
 	) {
 		RoomAIResponse responseBody = roomAIUseCase.analyzeRoom(seniorId, requestDto);
@@ -45,7 +45,7 @@ public class RoomAIController {
 	@GetMapping("/date/{seniorId}")
 	@PreAuthorize("hasRole('USER') and isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<List<String>>> getAnalysisDateList(
-		@PathVariable("seniorId") @MySenior Long seniorId
+		@MySenior @PathVariable("seniorId") Long seniorId
 	) {
 		List<String> responseBody = roomAIUseCase.getAnalysisDateList(seniorId);
 
@@ -56,7 +56,7 @@ public class RoomAIController {
 	@GetMapping("/{seniorId}")
 	@PreAuthorize("hasRole('USER') and isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<RoomAIResponse>> getAnalysisResult(
-		@PathVariable("seniorId") @MySenior Long seniorId,
+		@MySenior @PathVariable("seniorId") Long seniorId,
 		@RequestParam("date") String date
 	) {
 		RoomAIResponse responseBody = roomAIUseCase.getAnalysisResult(seniorId, date);
