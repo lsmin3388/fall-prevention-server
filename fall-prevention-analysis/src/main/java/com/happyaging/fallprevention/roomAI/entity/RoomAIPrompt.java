@@ -42,10 +42,6 @@ public class RoomAIPrompt {
 	@Column(name = "response")
 	private String response;
 
-	/**
-	 * 기존: private List<RoomAIImage> roomAIImages;
-	 * 변경: private Set<RoomAIImage> roomAIImages;
-	 */
 	@OneToMany(
 		mappedBy = "roomAIPrompt",
 		cascade = CascadeType.ALL,
