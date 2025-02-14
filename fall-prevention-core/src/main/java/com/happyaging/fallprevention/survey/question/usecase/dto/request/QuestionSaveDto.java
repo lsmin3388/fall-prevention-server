@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
  * 질문 생성 및 수정 시 사용하는 DTO
  */
 public record QuestionSaveDto(
-	Integer orderNumber,
+	Integer questionNumber,
 
 	String content, // 질문 내용
 
@@ -31,7 +31,7 @@ public record QuestionSaveDto(
 ) {
 	public Question of() {
 		return Question.builder()
-			.orderNumber(orderNumber)
+			.questionNumber(questionNumber)
 			.content(content)
 			.imageUrl(imageUrl)
 			.questionCategory(QuestionCategory.fromString(category))

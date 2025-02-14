@@ -1,8 +1,0 @@
-package survey.usecase.dto.question;
-
-public record SetNextQuestionDto(
-        Long currentQuestionId,
-        Long selectedOptionId,
-        Long nextQuestionId
-) {
-}

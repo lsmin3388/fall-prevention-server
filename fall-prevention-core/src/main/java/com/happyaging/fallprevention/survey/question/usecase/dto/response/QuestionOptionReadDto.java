@@ -10,16 +10,14 @@ import lombok.Builder;
 @Builder
 public record QuestionOptionReadDto(
 	Integer optionNumber,
-
 	String content,
-
-	Long nextQuestionId
+	Integer nextQuestionNumber
 ) {
 	public static QuestionOptionReadDto from(Option option) {
 		return QuestionOptionReadDto.builder()
 			.optionNumber(option.getId().getOptionNumber())
 			.content(option.getContent())
-			.nextQuestionId(option.getNextQuestion().getId())
+			.nextQuestionNumber(option.getNextQuestion().getQuestionNumber())
 			.build();
 	}
 

@@ -2,11 +2,17 @@ package com.happyaging.fallprevention.question;
 
 import java.util.List;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.happyaging.fallprevention.survey.question.usecase.QuestionUseCase;
 import com.happyaging.fallprevention.survey.question.usecase.dto.request.QuestionSaveDto;
@@ -29,12 +35,12 @@ public class QuestionController {
      */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') and isAuthenticated()")
-    public ResponseEntity<ApiSuccessResult<Long>> createQuestion(
+    public ResponseEntity<ApiSuccessResult<Integer>> createQuestion(
         @Valid @RequestBody QuestionSaveDto questionSaveDto) {
-        Long questionId = questionUseCase.createQuestion(questionSaveDto);
+        Integer questionNumber = questionUseCase.createQuestion(questionSaveDto);
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(ApiResponse.success(HttpStatus.CREATED, questionId));
+            .body(ApiResponse.success(HttpStatus.CREATED, questionNumber));
     }
 
     /**
@@ -42,13 +48,13 @@ public class QuestionController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and isAuthenticated()")
-    public ResponseEntity<ApiSuccessResult<Long>> updateQuestion(
-        @PathVariable("id") Long id,
+    public ResponseEntity<ApiSuccessResult<Integer>> updateQuestion(
+        @PathVariable("id") Integer id,
         @Valid @RequestBody QuestionSaveDto questionSaveDto) {
-        Long updatedId = questionUseCase.updateQuestion(id, questionSaveDto);
+        Integer questionNumber = questionUseCase.updateQuestion(id, questionSaveDto);
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ApiResponse.success(HttpStatus.OK, updatedId));
+            .body(ApiResponse.success(HttpStatus.OK, questionNumber));
     }
 
     /**
@@ -56,7 +62,7 @@ public class QuestionController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and isAuthenticated()")
-    public ResponseEntity<ApiSuccessResult<String>> deleteQuestion(@PathVariable("id") Long id) {
+    public ResponseEntity<ApiSuccessResult<String>> deleteQuestion(@PathVariable("id") Integer id) {
         questionUseCase.deleteQuestion(id);
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -67,9 +73,9 @@ public class QuestionController {
     /**
      * 질문 조회 - USER 전용 (ADMIN도 포함)
      */
-    @GetMapping
+    @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') and isAuthenticated()")
-    public ResponseEntity<ApiSuccessResult<QuestionReadDto>> getQuestion(@PathVariable("id") Long id) {
+    public ResponseEntity<ApiSuccessResult<QuestionReadDto>> getQuestion(@PathVariable("id") Integer id) {
         QuestionReadDto questions = questionUseCase.getQuestion(id);
         return ResponseEntity
             .status(HttpStatus.OK)

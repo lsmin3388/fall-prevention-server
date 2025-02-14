@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Option {
+
     @EmbeddedId
     private OptionId id;
 
@@ -26,11 +27,9 @@ public class Option {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    // 실제 보기에 표시되는 내용
     @Column(nullable = false)
     private String content;
 
-    // 이동할 다음 질문
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_question_id")
     private Question nextQuestion;

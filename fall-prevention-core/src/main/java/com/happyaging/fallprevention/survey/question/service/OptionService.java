@@ -1,6 +1,12 @@
 package com.happyaging.fallprevention.survey.question.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -26,12 +32,12 @@ public class OptionService {
 	private final QuestionRepository questionRepository;
 
 	/**
-	 * 주어진 Question에 대해 DTO 목록을 기반으로 옵션을 생성 및 저장합니다.
+	 * 주어진 Question 엔티티에 대해 DTO 목록을 기반으로 옵션 생성 및 저장
 	 */
 	@Transactional
 	public void saveOptionsForQuestion(Question question, List<QuestionOptionSaveDto> optionDtos) {
 		if (optionDtos != null && !optionDtos.isEmpty()) {
-			// DTO에 담긴 nextQuestionId 중 null이 아닌 값들을 모아서 한 번에 조회
+			// nextQuestionId가 있는 경우 한 번에 조회
 			Set<Long> nextQuestionIds = optionDtos.stream()
 				.map(QuestionOptionSaveDto::nextQuestionId)
 				.filter(Objects::nonNull)
@@ -39,8 +45,7 @@ public class OptionService {
 
 			Map<Long, Question> nextQuestionMap = new HashMap<>();
 			if (!nextQuestionIds.isEmpty()) {
-				nextQuestionMap = questionRepository.findAllById(nextQuestionIds)
-					.stream()
+				nextQuestionMap = questionRepository.findAllById(nextQuestionIds).stream()
 					.collect(Collectors.toMap(Question::getId, Function.identity()));
 			}
 
@@ -51,16 +56,19 @@ public class OptionService {
 					nextQuestion = Optional.ofNullable(nextQuestionMap.get(dto.nextQuestionId()))
 						.orElseThrow(QuestionNotFoundException::new);
 				}
+
 				OptionId optionId = OptionId.builder()
-					.questionId(question.getId())
+					.questionId(question.getId())      // 실제 DB PK
 					.optionNumber(dto.optionNumber())
 					.build();
+
 				Option option = Option.builder()
 					.id(optionId)
 					.question(question)
 					.content(dto.content())
 					.nextQuestion(nextQuestion)
 					.build();
+
 				options.add(option);
 			}
 			optionRepository.saveAll(options);
@@ -68,7 +76,7 @@ public class OptionService {
 	}
 
 	/**
-	 * 주어진 Question에 연관된 모든 옵션을 삭제합니다.
+	 * 주어진 Question(엔티티)에 연관된 옵션들을 삭제
 	 */
 	@Transactional
 	public void deleteOptionsForQuestion(Question question) {

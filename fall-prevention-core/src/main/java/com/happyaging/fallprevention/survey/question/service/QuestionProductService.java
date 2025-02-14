@@ -1,6 +1,10 @@
 package com.happyaging.fallprevention.survey.question.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -26,7 +30,7 @@ public class QuestionProductService {
 	private final ProductRepository productRepository;
 
 	/**
-	 * 주어진 Question에 대해 DTO 목록을 기반으로 질문-제품 연관 엔티티를 생성 및 저장합니다.
+	 * 주어진 Question에 대해 DTO 목록을 기반으로 질문-제품 연관 엔티티 생성 및 저장
 	 */
 	@Transactional
 	public void saveQuestionProductsForQuestion(Question question, List<QuestionProductProxyDto> productDtos) {
@@ -38,6 +42,7 @@ public class QuestionProductService {
 			Map<Long, Product> productMap = productRepository.findAllById(productIds)
 				.stream()
 				.collect(Collectors.toMap(Product::getId, Function.identity()));
+
 			List<QuestionProduct> questionProducts = new ArrayList<>();
 			for (QuestionProductProxyDto dto : productDtos) {
 				Product product = Optional.ofNullable(productMap.get(dto.productId()))
@@ -50,29 +55,32 @@ public class QuestionProductService {
 	}
 
 	/**
-	 * 주어진 Question에 연관된 모든 QuestionProduct를 삭제합니다.
+	 * 주어진 Question(객체)에 연관된 QuestionProduct 삭제
 	 */
 	@Transactional
 	public void deleteQuestionProductsForQuestion(Question question) {
-		List<QuestionProduct> products = questionProductRepository.findAllByQuestion(question);
+		// questionNumber로 찾을 수도 있지만, 여기서는 이미 question 엔티티가 있으므로
+		List<QuestionProduct> products = questionProductRepository
+			.findAllByQuestionQuestionNumber(question.getQuestionNumber());
 		if (products != null && !products.isEmpty()) {
 			questionProductRepository.deleteAll(products);
 		}
 	}
 
 	/**
-	 * 여러 Question ID에 대한 QuestionProduct를 조회하여 반환합니다.
+	 * 여러 questionNumber에 대한 QuestionProduct 목록 조회
 	 */
-	@Transactional(readOnly = true)
-	public List<QuestionProduct> getQuestionProductsByQuestionIds(Set<Long> questionIds) {
-		return questionProductRepository.findAllByQuestionIdIn(questionIds);
+	public List<QuestionProduct> getQuestionProductsByQuestionNumbers(Set<Integer> questionNumbers) {
+		if (questionNumbers == null || questionNumbers.isEmpty()) {
+			return List.of();
+		}
+		return questionProductRepository.findAllByQuestionQuestionNumberIn(questionNumbers);
 	}
 
 	/**
-	 * 단일 Question에 대한 QuestionProduct를 조회하여 반환합니다.
+	 * 단일 questionNumber에 대한 QuestionProduct 조회
 	 */
-	@Transactional(readOnly = true)
-	public List<QuestionProduct> getQuestionProductsForQuestion(Question question) {
-		return questionProductRepository.findAllByQuestion(question);
+	public List<QuestionProduct> getQuestionProductsForQuestion(Integer questionNumber) {
+		return questionProductRepository.findAllByQuestionQuestionNumber(questionNumber);
 	}
 }

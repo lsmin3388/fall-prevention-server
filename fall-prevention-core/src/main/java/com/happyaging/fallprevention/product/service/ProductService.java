@@ -41,7 +41,7 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(ProductNotFoundException::new);
         productRepository.delete(product);
-        // 트랜잭션이 끝나기 전까지 영속성 컨텍스트에 해당 엔티티가 남아있으므로 참조 가능.
+
         return product;
     }
 

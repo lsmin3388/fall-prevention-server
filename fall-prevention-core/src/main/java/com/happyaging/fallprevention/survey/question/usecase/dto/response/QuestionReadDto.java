@@ -10,30 +10,22 @@ import lombok.Builder;
 
 @Builder
 public record QuestionReadDto(
-	// Question
-	Long questionId,
-	Integer order,
+	Integer questionNumber,
 	String content,
 	String imageUrl,
 	String category,
 	String type,
 
-	// Options
 	List<QuestionOptionReadDto> options,
-
-	// Products
 	List<QuestionProductProxyDto> products
 ) {
-
 	public static QuestionReadDto from(Question question, List<QuestionProduct> products) {
 		return QuestionReadDto.builder()
-			.questionId(question.getId())
-			.order(question.getOrderNumber())
+			.questionNumber(question.getQuestionNumber())
 			.content(question.getContent())
 			.imageUrl(question.getImageUrl())
 			.category(question.getQuestionCategory().getCategory())
 			.type(question.getQuestionType().getType())
-
 			.options(QuestionOptionReadDto.from(question.getOptions()))
 			.products(QuestionProductProxyDto.from(products))
 			.build();

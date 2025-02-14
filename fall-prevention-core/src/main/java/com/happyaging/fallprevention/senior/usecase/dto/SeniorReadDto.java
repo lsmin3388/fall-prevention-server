@@ -10,6 +10,7 @@ import lombok.Builder;
 
 @Builder
 public record SeniorReadDto(
+	Long seniorId,
 	String name,
 	String address,
 	Integer birthYear,
@@ -20,6 +21,7 @@ public record SeniorReadDto(
 ) {
 	public static SeniorReadDto fromEntity(Senior senior) {
 		return SeniorReadDto.builder()
+			.seniorId(senior.getId())
 			.name(senior.getName())
 			.address(senior.getAddress())
 			.birthYear(senior.getBirthYear())

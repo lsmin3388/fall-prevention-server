@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,14 +24,22 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question {
+
+    /**
+     * 실제 DB PK. 내부적으로만 사용.
+     * 비즈니스 로직상에서는 questionNumber를 주요 식별자로 활용.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
     private Long id;
 
-    // 질문 순서
-    @Column(unique = true)
-    private Integer orderNumber;
+    /**
+     * 사용자 / 비즈니스 로직에서 사용하는 일련번호.
+     * 변경될 가능성이 있으므로 PK로 쓰지 않고 unique constraint 로만 사용.
+     */
+    @Column(unique = true, nullable = false)
+    private Integer questionNumber;
 
     // 질문 내용
     @Column(nullable = false)
@@ -49,13 +58,18 @@ public class Question {
 
     // 객관식일 때 선택지
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    /**
+     * EmbeddedId(OptionId)의 필드 중 'optionNumber' 기준으로 정렬.
+     */
+    @OrderBy("id.optionNumber ASC")
     private List<Option> options;
 
     @Builder
-    public Question(Long id, Integer orderNumber, String content, String imageUrl,
-        QuestionCategory questionCategory, QuestionType questionType, List<Option> options) {
+    public Question(Long id, Integer questionNumber, String content, String imageUrl,
+        QuestionCategory questionCategory, QuestionType questionType,
+        List<Option> options) {
         this.id = id;
-        this.orderNumber = orderNumber;
+        this.questionNumber = questionNumber;
         this.content = content;
         this.imageUrl = imageUrl;
         this.questionCategory = questionCategory;
@@ -64,8 +78,8 @@ public class Question {
     }
 
     public void update(QuestionSaveDto questionSaveDto) {
-        if (questionSaveDto.orderNumber() != null) {
-            this.orderNumber = questionSaveDto.orderNumber();
+        if (questionSaveDto.questionNumber() != null) {
+            this.questionNumber = questionSaveDto.questionNumber();
         }
 
         if (questionSaveDto.content() != null) {

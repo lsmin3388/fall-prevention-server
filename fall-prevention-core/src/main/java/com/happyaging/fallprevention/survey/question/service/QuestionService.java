@@ -1,6 +1,8 @@
 package com.happyaging.fallprevention.survey.question.service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -25,87 +27,114 @@ public class QuestionService implements QuestionUseCase {
 	private final OptionService optionService;
 	private final QuestionProductService questionProductService;
 
+	/**
+	 * 1) Question 생성
+	 * 2) Option 저장
+	 * 3) QuestionProduct 저장
+	 */
 	@Override
 	@Transactional
-	public Long createQuestion(QuestionSaveDto questionSaveDto) {
-		// 1. Question 저장
+	public Integer createQuestion(QuestionSaveDto questionSaveDto) {
+		// Question 엔티티 생성 & 저장
 		Question question = questionRepository.save(questionSaveDto.of());
 
-		// 2. 옵션 저장 (OptionService를 통해)
+		// Option 저장
 		optionService.saveOptionsForQuestion(question, questionSaveDto.options());
 
-		// 3. QuestionProduct 저장 (QuestionProductService를 통해)
+		// QuestionProduct 저장
 		questionProductService.saveQuestionProductsForQuestion(question, questionSaveDto.products());
 
-		return question.getId();
+		// 여기서는 questionNumber를 반환
+		return question.getQuestionNumber();
 	}
 
+	/**
+	 * questionNumber로 Question 조회 후 수정
+	 */
 	@Override
 	@Transactional
-	public Long updateQuestion(Long questionId, QuestionSaveDto questionSaveDto) {
-		// 1. 기존 Question 조회 (없으면 예외 발생)
-		Question question = questionRepository.findById(questionId)
+	public Integer updateQuestion(Integer questionNumber, QuestionSaveDto questionSaveDto) {
+		// PK 대신 questionNumber 로 조회
+		Question question = questionRepository.findByQuestionNumber(questionNumber)
 			.orElseThrow(QuestionNotFoundException::new);
 
-		// 2. Question 필드 업데이트 (엔티티 내 update() 메서드를 사용한다고 가정)
+		// 필드 업데이트
 		question.update(questionSaveDto);
 
-		// 3. 기존 옵션 및 QuestionProduct 삭제
+		// 옵션/연관상품 삭제 후 다시 등록
 		optionService.deleteOptionsForQuestion(question);
 		questionProductService.deleteQuestionProductsForQuestion(question);
 
-		// 4. 새로운 옵션 및 QuestionProduct 저장
 		optionService.saveOptionsForQuestion(question, questionSaveDto.options());
 		questionProductService.saveQuestionProductsForQuestion(question, questionSaveDto.products());
 
-		return question.getId();
+		// 변경된 questionNumber 반환 (update 시에 questionNumber도 변경될 수 있으므로)
+		return question.getQuestionNumber();
 	}
 
+	/**
+	 * questionNumber로 Question 조회 후 삭제
+	 */
 	@Override
 	@Transactional
-	public void deleteQuestion(Long questionId) {
-		// 1. 삭제할 Question 조회 (없으면 예외 발생)
-		Question question = questionRepository.findById(questionId)
+	public void deleteQuestion(Integer questionNumber) {
+		Question question = questionRepository.findByQuestionNumber(questionNumber)
 			.orElseThrow(QuestionNotFoundException::new);
 
-		// 2. 관련 옵션 및 QuestionProduct 삭제
 		optionService.deleteOptionsForQuestion(question);
 		questionProductService.deleteQuestionProductsForQuestion(question);
 
-		// 3. Question 삭제
 		questionRepository.delete(question);
 	}
 
+	/**
+	 * questionNumber ASC 정렬로 모든 Question 조회
+	 */
 	@Override
 	public List<QuestionReadDto> getAllQuestions() {
-		// 1. 전체 Question 조회
-		List<Question> questions = questionRepository.findAll();
+		// questionNumber 오름차순으로 전체 조회
+		List<Question> questions = questionRepository.findAllByOrderByQuestionNumberAsc();
 		if (questions.isEmpty()) {
 			return List.of();
 		}
 
-		// 2. 전체 질문의 ID를 모아서, 연관된 QuestionProduct를 한 번에 조회 (N+1 문제 최소화)
-		Set<Long> questionIds = questions.stream()
-			.map(Question::getId)
+		// 모든 questionNumber만 추출
+		Set<Integer> questionNumbers = questions.stream()
+			.map(Question::getQuestionNumber)
 			.collect(Collectors.toSet());
-		List<QuestionProduct> allQuestionProducts = questionProductService.getQuestionProductsByQuestionIds(questionIds);
-		var questionProductMap = allQuestionProducts.stream()
-			.collect(Collectors.groupingBy(qp -> qp.getQuestion().getId()));
 
-		// 3. 각 Question과 연결된 QuestionProduct 정보를 이용해 DTO 변환
+		// 연관된 QuestionProduct를 questionNumber 기준으로 한 번에 조회
+		List<QuestionProduct> allQuestionProducts =
+			questionProductService.getQuestionProductsByQuestionNumbers(questionNumbers);
+
+		// QuestionNumber -> QuestionProduct 목록 매핑
+		Map<Integer, List<QuestionProduct>> questionProductMap =
+			allQuestionProducts.stream()
+				.collect(Collectors.groupingBy(qp -> qp.getQuestion().getQuestionNumber()));
+
+		// DTO 변환
 		return questions.stream()
-			.map(q -> QuestionReadDto.from(q, questionProductMap.getOrDefault(q.getId(), List.of())))
+			.map(q -> {
+				List<QuestionProduct> products =
+					questionProductMap.getOrDefault(q.getQuestionNumber(), List.of());
+				return QuestionReadDto.from(q, products);
+			})
 			.collect(Collectors.toList());
 	}
 
+	/**
+	 * questionNumber로 단일 Question 조회
+	 */
 	@Override
-	public QuestionReadDto getQuestion(Long questionId) {
-		// 1. 단일 Question 조회 (없으면 예외 발생)
-		Question question = questionRepository.findById(questionId)
+	public QuestionReadDto getQuestion(Integer questionNumber) {
+		// questionNumber로 조회
+		Question question = questionRepository.findByQuestionNumber(questionNumber)
 			.orElseThrow(QuestionNotFoundException::new);
-		// 2. 해당 Question에 연관된 QuestionProduct 조회
-		List<QuestionProduct> questionProducts = questionProductService.getQuestionProductsForQuestion(question);
-		// 3. DTO 변환 후 반환
+
+		// 해당 Question에 연관된 QuestionProduct 조회
+		List<QuestionProduct> questionProducts =
+			questionProductService.getQuestionProductsForQuestion(questionNumber);
+
 		return QuestionReadDto.from(question, questionProducts);
 	}
 }
