@@ -54,7 +54,7 @@ public class SeniorController {
 	@PreAuthorize("hasRole('USER') and isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<Long>> updateSenior(
 		@RequestBody SeniorUpdateDto updateDto,
-		@PathVariable @MySenior Long seniorId
+		@MySenior @PathVariable("seniorId") Long seniorId
 	) {
 		Long responseBody = seniorUserUseCase.updateSenior(seniorId, updateDto);
 
@@ -66,8 +66,7 @@ public class SeniorController {
 	@DeleteMapping("/{seniorId}")
 	@PreAuthorize("hasRole('USER') and isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<Object>> deleteSenior(
-		@PathVariable Long seniorId,
-		@LoggedInUser PrincipalDetails principalDetails
+		@MySenior @PathVariable("seniorId") Long seniorId
 	) {
 		seniorUserUseCase.deleteSenior(seniorId);
 
@@ -91,7 +90,7 @@ public class SeniorController {
 	@GetMapping("/me/{seniorId}")
 	@PreAuthorize("hasRole('USER') and isAuthenticated()")
 	public ResponseEntity<ApiSuccessResult<SeniorReadDto>> getMySenior(
-		@PathVariable @MySenior Long seniorId
+		@MySenior @PathVariable("seniorId") Long seniorId
 	) {
 		SeniorReadDto responseBody = seniorUserUseCase.getMySenior(seniorId);
 
