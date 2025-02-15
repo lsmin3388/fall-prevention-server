@@ -1,5 +1,6 @@
 package com.happyaging.fallprevention.survey.question.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.happyaging.fallprevention.survey.question.entity.option.Option;
@@ -59,7 +60,7 @@ public class Question {
     // 객관식일 때 선택지
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id.optionNumber ASC")
-    private List<Option> options;
+    private List<Option> options = new ArrayList<>();
 
     @Builder
     public Question(Long id, Integer questionNumber, String content, String imageUrl,

@@ -1,6 +1,7 @@
 package com.happyaging.fallprevention.survey.survey.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,7 @@ public class SurveyService implements SurveyUseCase {
 			.pdfUrl("https://example.com")
 			.riskLevel(RiskLevel.NONE)
 			.summary("설문 결과 요약")
+			.responses(new HashSet<>())
 			.build();
 
 		// 4. Response(응답) 생성
