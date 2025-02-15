@@ -44,7 +44,7 @@ public class StorageController {
             }
         )
     public ResponseEntity<Resource> getImage(
-            @PathVariable String imageFileName
+            @PathVariable("imageFileName") String imageFileName
     ) {
         Resource file = storageService.loadAsResource(imageFileName);
         return ResponseEntity

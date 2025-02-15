@@ -1,6 +1,7 @@
 package com.happyaging.fallprevention.survey.survey.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,7 @@ public class SurveyService implements SurveyUseCase {
 			.pdfUrl("https://example.com")
 			.riskLevel(RiskLevel.NONE)
 			.summary("설문 결과 요약")
+			.responses(new HashSet<>())
 			.build();
 
 		// 4. Response(응답) 생성
@@ -75,13 +77,12 @@ public class SurveyService implements SurveyUseCase {
 
 	@Override
 	public List<SurveyReadDto> getSurveysBySenior(Long seniorId) {
-		List<Survey> surveys = surveyRepository.findAllWithAllRelations();
-		if (surveys.isEmpty()) {
+		List<Survey> surveys = surveyRepository.findAllBySeniorIdWithAllRelations(seniorId);
+		if (surveys == null || surveys.isEmpty()) {
 			return List.of();
 		}
-		// seniorId가 일치하는 설문만 필터링
+
 		return surveys.stream()
-			.filter(survey -> survey.getSenior().getId().equals(seniorId))
 			.map(SurveyReadDto::of)
 			.collect(Collectors.toList());
 	}

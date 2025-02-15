@@ -20,10 +20,10 @@ public record QuestionSaveDto(
 	String imageUrl, // 이미지 URL
 
 	@NotNull(message = "질문 종류를 선택하세요.")
-	String category, // 질문 카테고리 (질변 관련, 몸 상태, 운동 관련, 낙상 경험, 주거 환경)
+	QuestionCategory category, // 질문 카테고리 (질변 관련, 몸 상태, 운동 관련, 낙상 경험, 주거 환경)
 
 	@NotNull(message = "질문 방식을 선택하세요.")
-	String type, // 질문 타입 (객관식, 주관식, 참거짓)
+	QuestionType type, // 질문 타입 (객관식, 주관식, 참거짓)
 
 	List<QuestionOptionSaveDto> options, // 객관식일 때 선택지 목록
 
@@ -34,8 +34,8 @@ public record QuestionSaveDto(
 			.questionNumber(questionNumber)
 			.content(content)
 			.imageUrl(imageUrl)
-			.questionCategory(QuestionCategory.fromString(category))
-			.questionType(QuestionType.fromString(type))
+			.questionCategory(category)
+			.questionType(type)
 			.build();
 	}
 }

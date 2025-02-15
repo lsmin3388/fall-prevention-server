@@ -1,5 +1,6 @@
 package com.happyaging.fallprevention.survey.survey.usecase.dto.response;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,7 @@ public record SurveyReadDto(
 			.responses(
 				survey.getResponses().stream()
 					.map(ResponseReadDto::of)
+					.sorted(Comparator.comparing(ResponseReadDto::questionNumber))
 					.collect(Collectors.toList())
 			)
 			.build();
