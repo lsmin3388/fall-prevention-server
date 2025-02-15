@@ -8,6 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.happyaging.fallprevention.product.entity.Product;
 import com.happyaging.fallprevention.product.exception.ProductNotFoundException;
 import com.happyaging.fallprevention.product.persistence.ProductRepository;
+import com.happyaging.fallprevention.product.usecase.ProductUseCase;
+import com.happyaging.fallprevention.product.usecase.dto.ProductRequestDto;
+import com.happyaging.fallprevention.product.usecase.dto.ProductResponseDto;
+import com.happyaging.fallprevention.product.usecase.dto.ProductUpdateRequestDto;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,38 +19,54 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ProductService {
+public class ProductService implements ProductUseCase {
 
     private final ProductRepository productRepository;
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    @Override
+    @Transactional
+    public Long createProduct(@Valid ProductRequestDto productRequestDto) {
+        Product savedProduct = productRepository.save(productRequestDto.toEntity());
+
+        return savedProduct.getId();
     }
 
+    @Override
     @Transactional
-    public Product createProduct(@Valid Product product) {
-        return productRepository.save(product);
-    }
-
-    @Transactional
-    public Product updateProduct(Long id, Product updatedProduct) {
+    public Long updateProduct(Long id, ProductUpdateRequestDto productUpdateRequestDto) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(ProductNotFoundException::new);
-        existingProduct.update(updatedProduct);
-        return productRepository.save(existingProduct);
+        existingProduct.update(productUpdateRequestDto);
+        Product product = productRepository.save(existingProduct);
+
+        return product.getId();
     }
 
+    @Override
     @Transactional
-    public Product deleteProduct(Long id) {
+    public Long deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(ProductNotFoundException::new);
         productRepository.delete(product);
 
-        return product;
+        return product.getId();
     }
 
-    public Product getProduct(Long id) {
-        return productRepository.findById(id)
+    @Override
+    public ProductResponseDto getProduct(Long id) {
+        Product product = productRepository.findById(id)
                 .orElseThrow(ProductNotFoundException::new);
+
+        return ProductResponseDto.fromEntity(product);
+    }
+
+    @Override
+    public List<ProductResponseDto> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        if (products.isEmpty()) return List.of();
+
+        return products.stream()
+            .map(ProductResponseDto::fromEntity)
+            .toList();
     }
 }

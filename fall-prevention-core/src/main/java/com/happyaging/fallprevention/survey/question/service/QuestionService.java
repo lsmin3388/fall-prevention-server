@@ -2,6 +2,7 @@ package com.happyaging.fallprevention.survey.question.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.happyaging.fallprevention.survey.question.entity.Question;
 import com.happyaging.fallprevention.survey.question.entity.questionToProduct.QuestionProduct;
+import com.happyaging.fallprevention.survey.question.exception.QuestionDuplicatedException;
 import com.happyaging.fallprevention.survey.question.exception.QuestionNotFoundException;
 import com.happyaging.fallprevention.survey.question.persistence.QuestionRepository;
 import com.happyaging.fallprevention.survey.question.usecase.QuestionUseCase;
@@ -35,6 +37,10 @@ public class QuestionService implements QuestionUseCase {
 	@Override
 	@Transactional
 	public Integer createQuestion(QuestionSaveDto questionSaveDto) {
+		if (questionRepository.existsByQuestionNumber(questionSaveDto.questionNumber())) {
+			throw new QuestionDuplicatedException();
+		}
+
 		// Question 엔티티 생성 & 저장
 		Question question = questionRepository.save(questionSaveDto.of());
 
@@ -54,6 +60,12 @@ public class QuestionService implements QuestionUseCase {
 	@Override
 	@Transactional
 	public Integer updateQuestion(Integer questionNumber, QuestionSaveDto questionSaveDto) {
+		// questionNumber가 변경되었을 때 중복 체크
+		if (!Objects.equals(questionNumber, questionSaveDto.questionNumber())
+			&& questionRepository.existsByQuestionNumber(questionSaveDto.questionNumber())) {
+			throw new QuestionDuplicatedException();
+		}
+
 		// PK 대신 questionNumber 로 조회
 		Question question = questionRepository.findByQuestionNumber(questionNumber)
 			.orElseThrow(QuestionNotFoundException::new);

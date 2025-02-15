@@ -1,4 +1,4 @@
-package com.happyaging.fallprevention.product.dto;
+package com.happyaging.fallprevention.product.usecase.dto;
 
 import com.happyaging.fallprevention.product.entity.Product;
 

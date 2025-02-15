@@ -88,11 +88,11 @@ public class Question {
         }
 
         if (questionSaveDto.category() != null) {
-            this.questionCategory = QuestionCategory.fromString(questionSaveDto.category());
+            this.questionCategory = questionSaveDto.category();
         }
 
         if (questionSaveDto.type() != null) {
-            this.questionType = QuestionType.fromString(questionSaveDto.type());
+            this.questionType = questionSaveDto.type();
         }
     }
 }

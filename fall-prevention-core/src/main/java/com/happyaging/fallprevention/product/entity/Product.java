@@ -1,5 +1,7 @@
 package com.happyaging.fallprevention.product.entity;
 
+import com.happyaging.fallprevention.product.usecase.dto.ProductUpdateRequestDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +21,7 @@ public class Product {
     @Column(name = "product_id")
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
@@ -39,10 +41,17 @@ public class Product {
     }
 
 
-    public void update(Product updatedProduct) {
-        this.name = updatedProduct.getName();
-        this.price = updatedProduct.getPrice();
-        this.description = updatedProduct.getDescription();
-        this.imageUrl = updatedProduct.getImageUrl();
+    public void update(ProductUpdateRequestDto updatedProduct) {
+        if (updatedProduct.name() != null)
+            this.name = updatedProduct.name();
+
+        if (updatedProduct.price() != null)
+            this.price = updatedProduct.price();
+
+        if (updatedProduct.description() != null)
+            this.description = updatedProduct.description();
+
+        if (updatedProduct.imageUrl() != null)
+            this.imageUrl = updatedProduct.imageUrl();
     }
 }

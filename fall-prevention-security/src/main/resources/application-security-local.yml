@@ -8,7 +8,7 @@ app:
     bearer-type: Bearer
     auth-header: Authorization
     expiration:
-      access: 60 # 60  (1 minute)
+      access: 3600 # 60 * 60  (1 hour)
       refresh: 300 # 60 * 5 (5 minute)
 
 logging:
