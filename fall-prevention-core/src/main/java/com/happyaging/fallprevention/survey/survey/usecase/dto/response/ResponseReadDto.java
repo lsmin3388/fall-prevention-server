@@ -11,6 +11,7 @@ import lombok.Builder;
 @Builder
 public record ResponseReadDto(
 	Integer questionNumber,
+	String questionContent,
 	List<ResponseSelectedOptionReadDto> options, // 객관식/참거짓 (nullable)
 	String answerText // 주관식 (nullable)
 ) {
@@ -19,6 +20,11 @@ public record ResponseReadDto(
 			.questionNumber(
 				response.getQuestion() != null
 					? response.getQuestion().getQuestionNumber()
+					: null
+			)
+			.questionContent(
+				response.getQuestion() != null
+					? response.getQuestion().getContent()
 					: null
 			)
 			.options(

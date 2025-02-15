@@ -10,4 +10,5 @@ import com.happyaging.fallprevention.survey.question.entity.Question;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 	List<Question> findAllByOrderByQuestionNumberAsc();
 	Optional<Question> findByQuestionNumber(Integer questionNumber);
+	boolean existsByQuestionNumber(Integer questionNumber);
 }

@@ -1,4 +1,4 @@
-package com.happyaging.fallprevention.product.dto;
+package com.happyaging.fallprevention.product.usecase.dto;
 
 public record ProductUpdateRequestDto(
         String name,
