@@ -75,13 +75,12 @@ public class SurveyService implements SurveyUseCase {
 
 	@Override
 	public List<SurveyReadDto> getSurveysBySenior(Long seniorId) {
-		List<Survey> surveys = surveyRepository.findAllWithAllRelations();
-		if (surveys.isEmpty()) {
+		List<Survey> surveys = surveyRepository.findAllBySeniorIdWithAllRelations(seniorId);
+		if (surveys == null || surveys.isEmpty()) {
 			return List.of();
 		}
-		// seniorId가 일치하는 설문만 필터링
+
 		return surveys.stream()
-			.filter(survey -> survey.getSenior().getId().equals(seniorId))
 			.map(SurveyReadDto::of)
 			.collect(Collectors.toList());
 	}
