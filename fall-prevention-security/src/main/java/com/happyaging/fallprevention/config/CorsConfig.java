@@ -17,8 +17,8 @@ public class CorsConfig {
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(Arrays.asList(
-			"http://localhost:3000",
-			"http://localhost:3001"
+			"http://localhost:5173",
+			"https://api.happyaging.co.kr"
 		));
 		configuration.setAllowedMethods(Arrays.asList(
 			HttpMethod.GET.name(),
