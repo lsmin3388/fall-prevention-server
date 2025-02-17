@@ -7,6 +7,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.happyaging.fallprevention.account.entity.Account;
+import com.happyaging.fallprevention.account.entity.AccountRole;
+import com.happyaging.fallprevention.account.exception.AccountNotFoundException;
 import com.happyaging.fallprevention.account.persistence.AccountRepository;
 import com.happyaging.fallprevention.auth.exception.EmailDuplicatedException;
 import com.happyaging.fallprevention.auth.usecase.AuthUseCase;
@@ -44,6 +47,16 @@ public class AuthService implements AuthUseCase {
 		);
 
 		return authenticationService.issueToken(authentication);
+	}
+
+	@Override
+	@Transactional
+	public JwtTokens adminLogin(LoginRequestDto requestDto) {
+		JwtTokens jwtTokens = login(requestDto);
+		Account account = accountRepository.findByEmail(requestDto.email())
+			.orElseThrow(AccountNotFoundException::new);
+		if (account.getRole() != AccountRole.ADMIN) throw new AccountNotFoundException();
+		return jwtTokens;
 	}
 
 	@Override

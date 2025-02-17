@@ -44,5 +44,23 @@ public class LoginController {
 			.body(ApiResponse.success(HttpStatus.OK, jwtTokens));
 	}
 
+	@PostMapping("/admin/login")
+	public ResponseEntity<ApiSuccessResult<JwtTokens>> adminLogin(
+		@Valid @RequestBody LoginRequestDto requestDto,
+		HttpServletResponse response
+	) {
+		JwtTokens jwtTokens = authUseCase.adminLogin(requestDto);
+
+		Cookie accessTokenCookie = tokenCookieUtil.createCookieForAccessToken(jwtTokens.accessToken().value());
+		Cookie refreshTokenCookie = tokenCookieUtil.createCookieForRefreshToken(jwtTokens.refreshToken().value());
+
+		response.addCookie(accessTokenCookie);
+		response.addCookie(refreshTokenCookie);
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiResponse.success(HttpStatus.OK, jwtTokens));
+	}
+
 
 }
