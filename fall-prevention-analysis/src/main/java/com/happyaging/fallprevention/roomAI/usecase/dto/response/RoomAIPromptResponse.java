@@ -16,6 +16,7 @@ public record RoomAIPromptResponse(
 	Long roomAIPromptId,
 	RoomAnalysisResponseDTO responseDto,
 	RoomCategory roomCategory,
+	String roomName,
 	List<String> images
 ) {
 
@@ -42,6 +43,7 @@ public record RoomAIPromptResponse(
 			.roomAIPromptId(roomAIPrompt.getId())
 			.responseDto(parsedDto)
 			.roomCategory(roomAIPrompt.getRoomCategory())
+			.roomName(roomAIPrompt.getRoomName())
 			.images(images)
 			.build();
 	}
