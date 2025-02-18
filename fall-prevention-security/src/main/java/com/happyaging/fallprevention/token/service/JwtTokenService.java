@@ -1,6 +1,7 @@
 package com.happyaging.fallprevention.token.service;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -26,8 +27,10 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class JwtTokenService {
 	private final AccountRepository accountRepository;
@@ -79,8 +82,21 @@ public class JwtTokenService {
 	}
 
 	private Date buildExpiration(Integer expirationSeconds) {
-		return new Date(System.currentTimeMillis() + expirationSeconds * 1000);
+		Date date = new Date(System.currentTimeMillis() + expirationSeconds * 1000);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분 ss초");
+
+		// 초를 일, 시간, 분으로 변환
+		int days = expirationSeconds / (24 * 3600);
+		int hours = (expirationSeconds % (24 * 3600)) / 3600;
+		int minutes = (expirationSeconds % 3600) / 60;
+		int seconds = expirationSeconds % 60;
+
+		System.out.println("만료 시간: " + sdf.format(date)); // 날짜 로그
+		System.out.println("남은 기간: " + days + "일 " + hours + "시간 " + minutes + "분 " + seconds + "초"); // 변환 로그
+
+		return date;
 	}
+
 
 	public Jws<Claims> extractClaims(String tokenValue) {
 		return Jwts.parser()
