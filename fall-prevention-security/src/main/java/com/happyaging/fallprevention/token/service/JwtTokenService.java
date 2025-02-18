@@ -82,19 +82,8 @@ public class JwtTokenService {
 	}
 
 	private Date buildExpiration(Integer expirationSeconds) {
-		Date date = new Date(System.currentTimeMillis() + expirationSeconds * 1000);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분 ss초");
-
-		// 초를 일, 시간, 분으로 변환
-		int days = expirationSeconds / (24 * 3600);
-		int hours = (expirationSeconds % (24 * 3600)) / 3600;
-		int minutes = (expirationSeconds % 3600) / 60;
-		int seconds = expirationSeconds % 60;
-
-		System.out.println("만료 시간: " + sdf.format(date)); // 날짜 로그
-		System.out.println("남은 기간: " + days + "일 " + hours + "시간 " + minutes + "분 " + seconds + "초"); // 변환 로그
-
-		return date;
+		long expirationMillis = System.currentTimeMillis() + (expirationSeconds.longValue() * 1000L);
+		return new Date(expirationMillis);
 	}
 
 
