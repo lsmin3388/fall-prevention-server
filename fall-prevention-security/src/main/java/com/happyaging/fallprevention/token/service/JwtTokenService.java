@@ -1,6 +1,7 @@
 package com.happyaging.fallprevention.token.service;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -26,8 +27,10 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class JwtTokenService {
 	private final AccountRepository accountRepository;
@@ -79,8 +82,10 @@ public class JwtTokenService {
 	}
 
 	private Date buildExpiration(Integer expirationSeconds) {
-		return new Date(System.currentTimeMillis() + expirationSeconds * 1000);
+		long expirationMillis = System.currentTimeMillis() + (expirationSeconds.longValue() * 1000L);
+		return new Date(expirationMillis);
 	}
+
 
 	public Jws<Claims> extractClaims(String tokenValue) {
 		return Jwts.parser()
