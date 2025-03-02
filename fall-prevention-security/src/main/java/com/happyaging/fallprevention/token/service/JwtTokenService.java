@@ -1,7 +1,6 @@
 package com.happyaging.fallprevention.token.service;
 
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 

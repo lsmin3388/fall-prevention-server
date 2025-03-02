@@ -1,3 +1,4 @@
 openai:
   api-url: ${OPENAI_API_URI}
   api-key: ${OPENAI_API_KEY}
+  fine-tuned-model: ${OPENAI_FINE_TUNED_MODEL}

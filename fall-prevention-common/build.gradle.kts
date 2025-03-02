@@ -1,4 +1,3 @@
-// fall-prevention-common/build.gradle.kts
 dependencies {
     // Spring Boot Starters
     api("org.springframework.boot:spring-boot-starter-web")
