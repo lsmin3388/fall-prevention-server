@@ -36,10 +36,6 @@ public class RoomAI extends BaseAuditEntity {
 	@JoinColumn(name = "senior_id")
 	private Senior senior;
 
-	/**
-	 * 기존: private List<RoomAIPrompt> roomAIPrompt;
-	 * 변경: Set<RoomAIPrompt> roomAIPrompt;
-	 */
 	@OneToMany(
 		mappedBy = "roomAI",
 		cascade = CascadeType.ALL,
