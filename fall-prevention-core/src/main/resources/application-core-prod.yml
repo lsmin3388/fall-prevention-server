@@ -18,7 +18,9 @@ spring:
         format_sql: true
         jdbc:
           time_zone: Asia/Seoul
-
+  youtube:
+    api:
+      key: ${YOUTUBE_API_KEY}
 logging:
   level:
     hibernate.SQL: WARN
