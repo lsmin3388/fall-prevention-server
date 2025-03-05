@@ -15,6 +15,7 @@ public record QuestionReadDto(
 	Integer questionNumber,
 	String content,
 	String imageUrl,
+	Double weight,
 	QuestionCategory category,
 	QuestionType type,
 
@@ -26,6 +27,7 @@ public record QuestionReadDto(
 			.questionNumber(question.getQuestionNumber())
 			.content(question.getContent())
 			.imageUrl(question.getImageUrl())
+			.weight(question.getWeight())
 			.category(question.getQuestionCategory())
 			.type(question.getQuestionType())
 			.options(QuestionOptionReadDto.from(question.getOptions()))

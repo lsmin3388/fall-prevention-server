@@ -19,6 +19,8 @@ public record QuestionSaveDto(
 
 	String imageUrl, // 이미지 URL
 
+	Double weight, // 질문 가중치
+
 	@NotNull(message = "질문 종류를 선택하세요.")
 	QuestionCategory category, // 질문 카테고리 (질변 관련, 몸 상태, 운동 관련, 낙상 경험, 주거 환경)
 
@@ -36,6 +38,7 @@ public record QuestionSaveDto(
 			.imageUrl(imageUrl)
 			.questionCategory(category)
 			.questionType(type)
+			.weight(weight)
 			.build();
 	}
 }

@@ -9,13 +9,22 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.happyaging.fallprevention.account.entity.Account;
+import com.happyaging.fallprevention.account.entity.AccountRole;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public record PrincipalDetails(Account account) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(account.getRole().name()));
+        if (account.getRole() == AccountRole.ADMIN) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        } else {
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        }
         return authorities;
     }
 
