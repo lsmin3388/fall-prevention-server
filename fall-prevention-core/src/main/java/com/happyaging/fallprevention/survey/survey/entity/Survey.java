@@ -15,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
@@ -44,6 +45,7 @@ public class Survey extends BaseAuditEntity {
     @Enumerated(EnumType.STRING)
     private RiskLevel riskLevel;
 
+    @Lob
     private String summary;
 
     @Builder
@@ -55,5 +57,10 @@ public class Survey extends BaseAuditEntity {
         this.pdfUrl = pdfUrl;
         this.riskLevel = riskLevel;
         this.summary = summary;
+    }
+
+    public void addResponse(Response response) {
+        this.responses.add(response);
+        response.addSurvey(this);
     }
 }

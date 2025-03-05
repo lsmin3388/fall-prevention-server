@@ -26,19 +26,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question {
 
-    /**
-     * 실제 DB PK. 내부적으로만 사용.
-     * 비즈니스 로직상에서는 questionNumber를 주요 식별자로 활용.
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
     private Long id;
 
-    /**
-     * 사용자 / 비즈니스 로직에서 사용하는 일련번호.
-     * 변경될 가능성이 있으므로 PK로 쓰지 않고 unique constraint 로만 사용.
-     */
     @Column(unique = true, nullable = false)
     private Integer questionNumber;
 
@@ -48,6 +40,9 @@ public class Question {
 
     // 질문 관련 이미지 URL
     private String imageUrl;
+
+    // 질문 가중치
+    private Double weight;
 
     // 질문 카테고리
     @Enumerated(EnumType.STRING)
@@ -63,13 +58,13 @@ public class Question {
     private List<Option> options = new ArrayList<>();
 
     @Builder
-    public Question(Long id, Integer questionNumber, String content, String imageUrl,
-        QuestionCategory questionCategory, QuestionType questionType,
-        List<Option> options) {
+    public Question(Long id, Integer questionNumber, String content, String imageUrl, Double weight,
+        QuestionCategory questionCategory, QuestionType questionType, List<Option> options) {
         this.id = id;
         this.questionNumber = questionNumber;
         this.content = content;
         this.imageUrl = imageUrl;
+        this.weight = weight;
         this.questionCategory = questionCategory;
         this.questionType = questionType;
         this.options = options;
@@ -86,6 +81,10 @@ public class Question {
 
         if (questionSaveDto.imageUrl() != null) {
             this.imageUrl = questionSaveDto.imageUrl();
+        }
+
+        if (questionSaveDto.weight() != null) {
+            this.weight = questionSaveDto.weight();
         }
 
         if (questionSaveDto.category() != null) {

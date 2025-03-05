@@ -1,5 +1,14 @@
 package com.happyaging.fallprevention.youtube.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.PlaylistItem;
@@ -7,14 +16,6 @@ import com.google.api.services.youtube.model.PlaylistItemListResponse;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.happyaging.fallprevention.youtube.exception.VideoNotFoundException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class YouTubeService {
@@ -22,7 +23,7 @@ public class YouTubeService {
 	private final YouTube youtube;
 	private final String apiKey;
 
-	public YouTubeService(@Value("${spring.youtube.api.key}") String apiKey) {
+	public YouTubeService(@Value("${app.youtube.api-key}") String apiKey) {
 		this.apiKey = apiKey;
 		this.youtube = new YouTube.Builder(
 			new com.google.api.client.http.javanet.NetHttpTransport(),

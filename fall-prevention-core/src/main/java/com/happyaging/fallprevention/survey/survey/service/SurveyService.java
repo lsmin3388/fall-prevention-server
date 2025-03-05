@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.happyaging.fallprevention.senior.entity.Senior;
 import com.happyaging.fallprevention.senior.exception.SeniorNotFoundException;
 import com.happyaging.fallprevention.senior.persistence.SeniorRepository;
+import com.happyaging.fallprevention.survey.analysis.usecase.SurveyAnalysisUseCase;
+import com.happyaging.fallprevention.survey.analysis.usecase.dto.AnalysisRequest;
+import com.happyaging.fallprevention.survey.analysis.usecase.dto.AnalysisResponse;
 import com.happyaging.fallprevention.survey.question.entity.Question;
 import com.happyaging.fallprevention.survey.question.entity.option.Option;
 import com.happyaging.fallprevention.survey.question.exception.OptionNotFoundException;
@@ -29,38 +32,47 @@ import com.happyaging.fallprevention.survey.survey.usecase.dto.request.SurveySav
 import com.happyaging.fallprevention.survey.survey.usecase.dto.response.SurveyReadDto;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class SurveyService implements SurveyUseCase {
 
 	private final SurveyRepository surveyRepository;
 	private final SeniorRepository seniorRepository;
 	private final QuestionRepository questionRepository;
 	private final OptionRepository optionRepository;
+	private final SurveyAnalysisUseCase surveyAnalysisUseCase;
 
 	@Override
 	@Transactional
 	public Long createSurvey(Long seniorId, SurveySaveDto dto) {
-		// 1. Senior 조회
+		// 0. Senior 조회
 		Senior senior = seniorRepository.findById(seniorId)
 			.orElseThrow(SeniorNotFoundException::new);
 
+		// 1. Response 생성
+		List<Response> responses = buildResponses(dto.responses());
+		log.info("responses: {}", responses);
+
 		// 2. Response 분석
+		AnalysisRequest analysisRequest = AnalysisRequest.from(senior.getName(), responses);
+		AnalysisResponse analysisResponse = surveyAnalysisUseCase.analyzeSurvey(analysisRequest);
 
 		// 3. Survey 엔티티 생성
 		Survey survey = Survey.builder()
 			.senior(senior)
-			.pdfUrl("https://example.com")
-			.riskLevel(RiskLevel.NONE)
-			.summary("설문 결과 요약")
+			.pdfUrl(analysisResponse.report())
+			.riskLevel(RiskLevel.fromInt(analysisResponse.rank()))
+			.summary(analysisResponse.summary())
 			.responses(new HashSet<>())
 			.build();
 
-		// 4. Response(응답) 생성
-		List<Response> responses = buildResponses(survey, dto.responses());
+		// 4. Response - Survey 연관관계 설정
 		survey.getResponses().addAll(responses);
+		responses.forEach(survey::addResponse);
 
 		// 5. Survey 저장
 		surveyRepository.save(survey);
@@ -96,7 +108,7 @@ public class SurveyService implements SurveyUseCase {
 		surveyRepository.delete(survey);
 	}
 
-	private List<Response> buildResponses(Survey survey, List<ResponseSaveDto> responseDtos) {
+	private List<Response> buildResponses(List<ResponseSaveDto> responseDtos) {
 		List<Response> responses = new ArrayList<>();
 		if (responseDtos == null || responseDtos.isEmpty()) {
 			return responses;
@@ -107,7 +119,6 @@ public class SurveyService implements SurveyUseCase {
 				.orElseThrow(QuestionNotFoundException::new);
 
 			Response response = Response.builder()
-				.survey(survey)
 				.question(question)
 				.answerText(rDto.answerText())
 				.build();

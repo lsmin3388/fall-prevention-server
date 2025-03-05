@@ -1,13 +1,22 @@
 package com.happyaging.fallprevention.youtube;
 
-import com.happyaging.fallprevention.youtube.service.YouTubeService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.happyaging.fallprevention.util.api.ApiResponse;
+import com.happyaging.fallprevention.util.api.ApiSuccessResult;
+import com.happyaging.fallprevention.youtube.service.YouTubeService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/youtube")
@@ -23,9 +32,14 @@ public class YouTubeController {
 	 * @throws IOException API 호출 중 오류 발생 시
 	 */
 	@GetMapping("/video/details")
-	public ResponseEntity<Map<String, String>> getVideoDetails(
-		@RequestParam(name = "videoId") String videoId) throws IOException {
-		return ResponseEntity.ok(youTubeService.getVideoDetails(videoId));
+	@PreAuthorize("hasRole('USER') and isAuthenticated()")
+	public ResponseEntity<ApiSuccessResult<Map<String, String>>> getVideoDetails(
+		@RequestParam(name = "videoId") String videoId
+	) throws IOException {
+		Map<String, String> videoDetails = youTubeService.getVideoDetails(videoId);
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiResponse.success(HttpStatus.OK, videoDetails));
 	}
 
 	/**
@@ -37,11 +51,15 @@ public class YouTubeController {
 	 * PLcgCdNTzpN1iHjLXuON6k_lkg29cHDCMT(해피에이징 플레이리스트 ID 중 하나)
 	 */
 	@GetMapping("/playlist/videos")
-	public ResponseEntity<List<Map<String, String>>> getPlaylistVideos
-	(@RequestParam(name = "playlistId") String playlistId,
+	@PreAuthorize("hasRole('USER') and isAuthenticated()")
+	public ResponseEntity<ApiSuccessResult<List<Map<String, String>>>> getPlaylistVideos(
+		@RequestParam(name = "playlistId") String playlistId,
 		@RequestParam(name = "maxResults", required = false, defaultValue = "10") long maxResults
 	) throws IOException {
-		return ResponseEntity.ok(youTubeService.getPlaylistVideos(playlistId, maxResults));
+		List<Map<String, String>> playlistVideos = youTubeService.getPlaylistVideos(playlistId, maxResults);
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiResponse.success(HttpStatus.OK, playlistVideos));
 	}
 
 }

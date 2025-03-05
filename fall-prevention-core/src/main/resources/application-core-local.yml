@@ -22,9 +22,14 @@ spring:
         format_sql: true
         jdbc:
           time_zone: Asia/Seoul
+
+app:
   youtube:
-    api:
-      key: ${YOUTUBE_API_KEY}
+    api-key: ${YOUTUBE_API_KEY}
+  survey:
+    analysis:
+      api-url: ${SURVEY_ANALYSIS_API_URL}
+
 logging:
   level:
     hibernate.SQL: DEBUG
