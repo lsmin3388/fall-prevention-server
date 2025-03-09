@@ -1,7 +1,7 @@
 spring:
   profiles:
     group:
-      local-profile: local, core-local, security-local, analysis-local
-      dev-profile: dev, core-dev, security-dev, analysis-dev
-      prod-profile: prod, core-prod, security-prod, analysis-prod
+      local-profile: local, api-local, core-local, security-local, analysis-local
+      dev-profile: dev, api-dev, core-dev, security-dev, analysis-dev
+      prod-profile: prod, api-prod, core-prod, security-prod, analysis-prod
     default: local-profile
