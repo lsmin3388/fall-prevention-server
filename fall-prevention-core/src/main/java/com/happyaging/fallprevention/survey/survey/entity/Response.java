@@ -63,4 +63,8 @@ public class Response {
         this.options = (options != null) ? options : new ArrayList<>();
         this.answerText = answerText;
     }
+
+    public void addSurvey(Survey survey) {
+        this.survey = survey;
+    }
 }

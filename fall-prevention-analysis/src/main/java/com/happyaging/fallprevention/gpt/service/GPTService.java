@@ -24,6 +24,7 @@ public class GPTService {
 	private WebClient webClient;
 	private final StorageService storageService;
 	private final GPTProperties gptProperties;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@PostConstruct
 	public void init() {
@@ -48,7 +49,7 @@ public class GPTService {
 					.role("user")
 					.prompt(prompt)
 					.base64Images(base64Images)
-					.maxTokens(1000)
+					.maxTokens(5000)
 					.build()
 			)
 			.retrieve()
@@ -60,9 +61,7 @@ public class GPTService {
 			.block();
 
 		try {
-			ObjectMapper objectMapper = new ObjectMapper();
 			JsonNode root = objectMapper.readTree(gptFullResponse);
-
 			JsonNode choices = root.path("choices");
 			if (!choices.isMissingNode() && !choices.isEmpty()) {
 				JsonNode contentNode = choices.get(0).path("message").path("content");
@@ -73,7 +72,6 @@ public class GPTService {
 		} catch (Exception e) {
 			log.error("Failed to parse GPT response", e);
 		}
-
 		return "";
 	}
 }

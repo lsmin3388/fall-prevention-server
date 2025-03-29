@@ -4,6 +4,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -39,5 +40,10 @@ public class ExternalExceptionHandler extends BaseExceptionHandler<Exception> {
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<ApiErrorResult> handleValidationException(BadCredentialsException exception) {
 		return handleException(exception, HttpStatus.UNAUTHORIZED, "LOGIN_FAILED");
+	}
+
+	@ExceptionHandler(AuthorizationDeniedException.class)
+	public ResponseEntity<ApiErrorResult> handleAuthorizationDeniedException(AuthorizationDeniedException exception) {
+		return handleException(exception, HttpStatus.FORBIDDEN, "NO_PERMISSION");
 	}
 }
